@@ -1,0 +1,21 @@
+{
+    "name": "minibase/minibase",
+    "type": "library",
+    "description": "Minimal extensible framework for PHP - done right.",
+    "homepage": "http://github.com/peec/minibase",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Petter Kjelkenes",
+            "email": "kjelkenes@gmail.com",
+            "homepage": "http://pkj.no",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-0": {"Minibase": "src/"}
+    },
+    "require": {
+        "php": ">=5.4.0"
+    }
+}
