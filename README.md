@@ -12,7 +12,17 @@ It uses PHP 5.4 features, so PHP 5.4+ is supported.
 
 You can install Minibase with Composer.
 
-	"minibase/minibase": "dev-master"
+1. Install composer.
+2. Create composer.json and put a require dependency.
+
+
+	{
+	    "require": {
+	        "minibase/minibase": "dev-master"
+	    }
+	}
+
+3. Run `composer install`
 
 
 ### Simplicity
