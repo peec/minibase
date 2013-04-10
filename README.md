@@ -41,6 +41,9 @@ There are no built in router configuration, it's neatly wrapped with a method th
 
 
 ```php
+	// Create the app object.
+	$mb = \Minibase\MB::create();
+	
 	// Home page.
 	$mb->on("get", "/", function () {
 		// some logic.
