@@ -47,11 +47,21 @@ class MB{
 			$uri = $this->request->uri;
 			
 			if(preg_match("#^$url$#i", $uri, $matches)) {
-				$this->params = array_slice($matches, 1);
-				$call = \Closure::bind($call, $this);
 				
+				
+				$this->params = array_slice($matches, 1);
 				$this->events->trigger("mb:route:before", [$uri, $method, $this->params]);
-				$resp = $call();
+				
+				// if not array (obj, method) or function call, bind $this.
+				if (!is_array($call) && !is_string($call)){
+					$call = \Closure::bind($call, $this);
+				}
+				
+				$resp = call_user_func_array($call, array($this->params, $this));
+				
+				
+				
+				
 				if (!($resp instanceof Response)){
 					throw new InvalidControllerReturnException("Controllers must return instances of a Response.");
 				}
