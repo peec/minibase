@@ -8,6 +8,12 @@ Minibase is a small framework for RESTful PHP applications.
 It uses PHP 5.4 features, so PHP 5.4+ is supported.
 
 
+## Install
+
+You can install Minibase with Composer.
+
+	"minibase/minibase": "dev-master"
+
 
 ### Simplicity
 
