@@ -20,6 +20,10 @@ class MB{
 	public $events;
 	public $request;
 	
+	/**
+	 * Factory a new application
+	 * Uses global variables to create nested objects.
+	 */
 	static public function create () {
 		$mb = new MB();
 		$mb->events = new EventBinder();
@@ -27,6 +31,14 @@ class MB{
 		return $mb;
 	}
 	
+	/**
+	 * Routes HTTP requests against closure callbacks.
+	 * 
+	 * @param string $method The Request method (get,post,put,delete,etc..)
+	 * @param string $url The url starting with backslash, ie. "/" or "/hello/(\d+)". Can have regexp.
+	 * @param string $call A callback (closure) to run if the url and http method matches.
+	 * @throws InvalidControllerReturnException
+	 */
 	public function on ($method, $url, $call) {
 		
 		if ($this->request->method === strtolower($method)) {
