@@ -45,7 +45,7 @@ $app->on("get", "/api/news", function ($params, $that) {
 	return $this->respond("json")
 		->data($arrayOrObjectFromDatabase);
 });
-
+```
 
 ## Callback parameters
 
