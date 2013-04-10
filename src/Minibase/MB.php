@@ -23,6 +23,7 @@ class MB{
 	/**
 	 * Factory a new application
 	 * Uses global variables to create nested objects.
+	 * @return Minibase\MB
 	 */
 	static public function create () {
 		$mb = new MB();
@@ -37,6 +38,7 @@ class MB{
 	 * @param string $method The Request method (get,post,put,delete,etc..)
 	 * @param string $url The url starting with backslash, ie. "/" or "/hello/(\d+)". Can have regexp.
 	 * @param string $call A callback (closure) to run if the url and http method matches.
+	 * @return Minibase\MB
 	 * @throws InvalidControllerReturnException
 	 */
 	public function on ($method, $url, $call) {
@@ -63,11 +65,23 @@ class MB{
 		return $this;
 	}
 	
-	
+	/**
+	 * Registers a new plugin.
+	 * After registered, it can be accessed with `$this->my_name`
+	 * @param string $name Must contain any of [a-zA-Z0-9_]
+	 * @param callback $call A anonymous functon that returns the result of the plugin. 
+	 */
 	public function plugin($name, $call){
 		$this->plugins[$name] = array($call, false);
 	}
 	
+	/**
+	 * Returns a plugin if it exists, throws Exception otherwise.
+	 * If it's already initialized it returns the cached result.
+	 * 
+	 * @param string $name Plugin name
+	 * @throws Exception
+	 */
 	public function __get($name){
 		if (!isset($this->plugins[$name])){
 			throw new Exception("Plugin {$name} does not exist. ");
@@ -83,7 +97,12 @@ class MB{
 		return $this->plugins[$name][0];
 	}
 	
-	
+	/**
+	 * Returns a Minibase\Http\Response object based on the type you want to return.
+	 * @param string $type The type of response you want, avaialble is: html, redirect and json.
+	 * @throws \Exception If the type does not match any of the available types.
+	 * @return Minibase\Http\Response
+	 */
 	public function respond($type = 'html'){
 		switch($type) {
 			case "json":
