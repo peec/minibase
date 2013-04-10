@@ -46,3 +46,19 @@ $app->on("get", "/api/news", function ($params, $that) {
 		->data($arrayOrObjectFromDatabase);
 });
 
+
+## Callback parameters
+
+There are two parameters passed to the callback, `$params` and `$that`.
+
+- `$params`: Array of arguments in the url if you have a regex route. So `/news/(\d+)/(\d+)` will result in example `[1,2]`
+- `$that`: A reference to the instance of `Minibase\MB` (your application object).
+
+Note that closures (anonymos functions) have `$this` bound to the application object.
+
+## Returning a Minibase\Http\Result
+
+Every callback should return instance of `Minibase\Http\Result`, there are some built in Result types such as `Minibase\Http\HtmlResponse`, `Minibase\Http\JsonResponse` and `Minibase\Http\RedirectResponse`.
+
+There are a helper method named `respond` in `Minibase\MB` that returns a Response object.
+
