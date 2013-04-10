@@ -61,3 +61,26 @@ Minibase has a simple plugin system whereas you can create global plugins and re
 	$mb->my_plugin->someMethodInSomethingClass();
 
 
+
+### Event based architecture.
+
+Minibase uses event based architecture with a simple on / trigger system.
+
+Forexample you can listen on event on before route.
+
+	$mb->events->on("mb:route:before", function ($uri, $method, $params){
+		// Run some code right before we run the "controller method".
+	});
+
+You can also trigger custom events.
+
+	$mb->events->trigger("hello", array("World!"));
+
+
+And listen to your event...
+
+	$mb->events->on("hello", function ($arg1) {
+		echo "Hello  $arg1";
+	});
+
+
