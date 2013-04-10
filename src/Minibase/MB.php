@@ -1,14 +1,24 @@
 <?php
 namespace Minibase;
 
+use Minibase\Http\Response;
+
+use Minibase\Http\Request;
+
 use Minibase\Wreqr\EventBinder;
 use Minibase\Http;
 
+/**
+ * Application stub for a simple application.
+ * 
+ * @author peec
+ */
 class MB{
 	
 	private $plugins = array();
 	public $params = array();
 	public $events;
+	public $request;
 	
 	static public function create () {
 		$mb = new MB();
@@ -27,7 +37,12 @@ class MB{
 				$call = \Closure::bind($call, $this);
 				
 				$this->events->trigger("mb:route:before", [$uri, $method, $this->params]);
-				$call()->execute();
+				$resp = $call();
+				if (!($resp instanceof Response)){
+					throw new InvalidControllerReturnException("Controllers must return instances of a Response.");
+				}
+				$resp->execute();
+				
 				$this->events->trigger("mb:route:after", [$uri, $this->params]);
 			}
 			
