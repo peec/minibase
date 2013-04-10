@@ -1,0 +1,5 @@
+{
+	"require":{
+	     "minibase/minibase":"dev-master"
+	}
+}
