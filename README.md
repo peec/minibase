@@ -15,12 +15,13 @@ You can install Minibase with Composer.
 1. Install composer.
 2. Create composer.json and put a require dependency.
 
-
-	{
-	    "require": {
-	        "minibase/minibase": "dev-master"
-	    }
-	}
+```json
+{
+    "require": {
+        "minibase/minibase": "dev-master"
+    }
+}
+```
 
 3. Run `composer install`
 
@@ -39,6 +40,7 @@ You can install Minibase with Composer.
 There are no built in router configuration, it's neatly wrapped with a method that takes 3 arguments. HTTP method, uri and callback. 
 
 
+```php
 	// Home page.
 	$mb->on("get", "/", function () {
 		// some logic.
@@ -62,12 +64,13 @@ There are no built in router configuration, it's neatly wrapped with a method th
 
 		return $this->respond("redirect")->to("http://google.com");
 	});
-
+```
 
 ### Extensible.
 
 Minibase has a simple plugin system whereas you can create global plugins and register plugins simply. Dependency injected, so only initialized once (thereby performance boost).
 
+```php
 	// Create.
 	$mb->plugin("my_plugin", function () {
 		return new Something();
@@ -75,7 +78,7 @@ Minibase has a simple plugin system whereas you can create global plugins and re
 
 	// ... and later on , use.
 	$mb->my_plugin->someMethodInSomethingClass();
-
+```
 
 
 ### Event based architecture.
@@ -84,19 +87,23 @@ Minibase uses event based architecture with a simple on / trigger system.
 
 Forexample you can listen on event on before route.
 
+```php
 	$mb->events->on("mb:route:before", function ($uri, $method, $params){
 		// Run some code right before we run the "controller method".
 	});
+```
 
 You can also trigger custom events.
 
+```php
 	$mb->events->trigger("hello", array("World!"));
-
+```
 
 And listen to your event...
 
+```php
 	$mb->events->on("hello", function ($arg1) {
 		echo "Hello  $arg1";
 	});
-
+```
 
