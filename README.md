@@ -3,10 +3,9 @@
 
 ## Minibase
 
-Minibase is a small framework for RESTful PHP applications.
+Minibase is a small framework for RESTful PHP applications. Minibase is perfect to create API's for JS frameworks such as `Backbone`. It's also great to create small sites. Minibase provides you with some arcitecture, but doesn't enforce you to use any 3rdparty library. You can use the ORM, Logger, Template engine of your choice with minimal configuration due to the plugin system.
 
-It uses PHP 5.4 features, so PHP 5.4+ is supported.
-
+Minibase takes use of PHP 5.4 features such as Closure scope binding, so PHP 5.4+ is a must.
 
 ### Install
 
@@ -15,12 +14,13 @@ You can install Minibase with Composer.
 1. Install composer.
 2. Create composer.json and put a require dependency.
 
-
-	{
-	    "require": {
-	        "minibase/minibase": "dev-master"
-	    }
-	}
+```json
+{
+    "require": {
+        "minibase/minibase": "dev-master"
+    }
+}
+```
 
 3. Run `composer install`
 
@@ -39,6 +39,10 @@ You can install Minibase with Composer.
 There are no built in router configuration, it's neatly wrapped with a method that takes 3 arguments. HTTP method, uri and callback. 
 
 
+```php
+	// Create the app object.
+	$mb = \Minibase\MB::create();
+	
 	// Home page.
 	$mb->on("get", "/", function () {
 		// some logic.
@@ -62,12 +66,13 @@ There are no built in router configuration, it's neatly wrapped with a method th
 
 		return $this->respond("redirect")->to("http://google.com");
 	});
-
+```
 
 ### Extensible.
 
 Minibase has a simple plugin system whereas you can create global plugins and register plugins simply. Dependency injected, so only initialized once (thereby performance boost).
 
+```php
 	// Create.
 	$mb->plugin("my_plugin", function () {
 		return new Something();
@@ -75,7 +80,7 @@ Minibase has a simple plugin system whereas you can create global plugins and re
 
 	// ... and later on , use.
 	$mb->my_plugin->someMethodInSomethingClass();
-
+```
 
 
 ### Event based architecture.
@@ -84,19 +89,23 @@ Minibase uses event based architecture with a simple on / trigger system.
 
 Forexample you can listen on event on before route.
 
+```php
 	$mb->events->on("mb:route:before", function ($uri, $method, $params){
 		// Run some code right before we run the "controller method".
 	});
+```
 
 You can also trigger custom events.
 
+```php
 	$mb->events->trigger("hello", array("World!"));
-
+```
 
 And listen to your event...
 
+```php
 	$mb->events->on("hello", function ($arg1) {
 		echo "Hello  $arg1";
 	});
-
+```
 
