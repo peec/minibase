@@ -3,10 +3,9 @@
 
 ## Minibase
 
-Minibase is a small framework for RESTful PHP applications.
+Minibase is a small framework for RESTful PHP applications. Minibase is perfect to create API's for JS frameworks such as `Backbone`. It's also great to create small sites. Minibase provides you with some arcitecture, but doesn't enforce you to use any 3rdparty library. You can use the ORM, Logger, Template engine of your choise with minimal configuration due to the plugin system.
 
-It uses PHP 5.4 features, so PHP 5.4+ is supported.
-
+Minibase takes use of PHP 5.4 features such as Closure scope binding, so PHP 5.4+ is a must.
 
 ### Install
 
