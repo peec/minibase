@@ -47,6 +47,26 @@ $app->on("get", "/api/news", function ($params, $that) {
 });
 ```
 
+## Accepting json as raw format to callbacks.
+
+You can use the `$data = $this->request->json()` method inside the callback for a route. This gets a JSON request body as a php array. Useful for creating API's against JS frameworks such as Backbone etc. `$this->request->json()` throws `Minibase\Http\InvalidJsonRequestException` if invalid json is posted.
+
+```php
+$mb->on("get", "/", function () {
+	$this->request->json();
+	// return something.	
+});
+```
+
+Creating a global 400 error, so you don't have to catch forexample `InvalidJsonRequestException` is easy. A sample implementation of this might be the following:
+
+```php
+$mb->events->on("mb:error:400", function ($exception) {
+	return $this->respond("json")
+		->data(array("message" => "Sorry, bad request. Must be JSON formated."));
+}, $mb); // Last argument binds $this to $mb inside the closure.
+```
+
 ## Callback parameters
 
 There are two parameters passed to the callback, `$params` and `$that`.
