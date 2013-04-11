@@ -18,6 +18,12 @@ class Request {
 	 * @var string The http request method, i.e. post, get .etc.
 	 */
 	public $method;
+	
+	/**
+	 * 
+	 * @var array Array of arguments to this uri.
+	 */
+	public $params;
 
 	/**
 	 * Returns a Request object from the global $_SERVER vars.

@@ -16,7 +16,6 @@ use Minibase\Http;
 class MB{
 	
 	private $plugins = array();
-	public $params = array();
 	public $events;
 	public $request;
 	
@@ -48,17 +47,16 @@ class MB{
 			
 			if(preg_match("#^$url$#i", $uri, $matches)) {
 				
-				
-				$this->params = array_slice($matches, 1);
-				$this->events->trigger("mb:route:before", [$uri, $method, $this->params]);
+				$this->request->params = array_slice($matches, 1);
+				// Trigger event mb:route:before and send Request instance to it.
+				$this->events->trigger("mb:route:before", array($this->request));
 				
 				// if not array (obj, method) or function call, bind $this.
 				if (!is_array($call) && !is_string($call)){
 					$call = \Closure::bind($call, $this);
 				}
 				
-				$resp = call_user_func_array($call, array($this->params, $this));
-				
+				$resp = call_user_func_array($call, array($this->request->params, $this));
 				
 				
 				
@@ -67,7 +65,7 @@ class MB{
 				}
 				$resp->execute();
 				
-				$this->events->trigger("mb:route:after", [$uri, $this->params]);
+				$this->events->trigger("mb:route:after", array($this->request, $resp));
 			}
 			
 			

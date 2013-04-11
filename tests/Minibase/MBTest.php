@@ -49,7 +49,11 @@ class MBTest extends \PHPUnit_Framework_TestCase{
 		$mock = $this->getMock('stdClass', array('myCallback'));
 		$mock->expects($this->once())
 		->method('myCallback')
+		->with(array(2), $mb)
 		->will($this->returnValue($resp));
+		
+		
+		
 		
 		$mb->on("get", "/test/(\d+)", array($mock, 'myCallback'));
 		
