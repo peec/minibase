@@ -9,7 +9,12 @@ use Minibase\Mvc\View;
  *
  */
 class HtmlResponse extends Response{
+	private $viewPath; 
 
+	public function __construct($events, $viewPath) {
+		parent::__construct($events);
+		$this->viewPath = $viewPath;
+	}
 	/**
 	 * The view file to use as the response.
 	 * @param string $view The view file location.
@@ -17,7 +22,7 @@ class HtmlResponse extends Response{
 	 * @return Minibase\Http\HtmlResponse
 	 */
 	public function view ($view, $vars = array()) {
-		$v = new View($this->events);
+		$v = new View($this->events, null, $this->viewPath);
 		$this->body = $v->render($view, $vars);
 
 		return $this;

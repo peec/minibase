@@ -15,9 +15,38 @@ use Minibase\Http;
  */
 class MB{
 	
+	/**
+	 * Array of plugins registered with the `plugin` method.
+	 * @var array Array of plugins
+	 */
 	private $plugins = array();
+	
+	/**
+	 * The global event binder.
+	 * @var Minibase\Wreqr\EventBinder
+	 */
 	public $events;
+
+	/**
+	 * The HTTP request object.
+	 * @var Minibase\Http\Request
+	 */
 	public $request;
+	
+
+	/**
+	 * Configuration set by setConfig
+	 * @var array Array of configuration.
+	 */
+	private $cfg = array();
+	
+	/**
+	 * 
+	 * @var string Config key for view path.
+	 */
+	const CFG_VIEWPATH = "viewPath";
+	
+	
 	
 	/**
 	 * Factory a new application
@@ -128,12 +157,16 @@ class MB{
 				return new Http\RedirectResponse($this->events);
 				break;
 			case "html":
-				return new Http\HtmlResponse($this->events);
+				return new Http\HtmlResponse($this->events, ($this->cfg[self::CFG_VIEWPATH] ?: null));
 				break;
 			default: 
 				throw new \Exception("No such response type.");
 				break;
 		}
 	}
-		
+	
+	public function setConfig($key, $value) {
+		$this->cfg[$key] = $value;
+		return $this;
+	}
 }

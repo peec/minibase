@@ -14,10 +14,13 @@ class View{
 	public $parentView;
 	public $request;
 	public $events;
+	
+	private $viewPath;
 
-	public function __construct(EventBinder $eventbinder, $parentView = null) {
+	public function __construct(EventBinder $eventbinder, $parentView = null, $viewPath = null) {
 		$this->parentView = $parentView;
 		$this->events = $eventbinder;
+		$this->viewPath = $viewPath;
 	}
 	
 	/**
@@ -55,11 +58,14 @@ class View{
 	 */
 	public function render ($view, $vars = array()) {
 
-		$callback = function($vars) use ($view) {
+		
+		$viewPath = $this->viewPath;
+		
+		$callback = function($vars) use ($view, $viewPath) {
 			$this->events->trigger("before:render", [$view, &$vars]);
 			extract($vars);
 				
-			include $view;
+			include ($viewPath ?: "") . $view;
 		};
 
 		ob_start();
