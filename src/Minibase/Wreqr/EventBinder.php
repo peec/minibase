@@ -19,6 +19,15 @@ class EventBinder {
 	public function on ($event, $callback, $that = null) {
 		$this->bindings[$event][] = array($callback, $that);
 	}
+	
+	/**
+	 * Checks if a binding has a on handler
+	 * @param string $event Event name.
+	 * @return boolean true if $event has a on handler, false otherwise.
+	 */
+	public function hasOn ($event) {
+		return isset($this->bindings[$event]);
+	}
 
 	/**
 	 * Triggers an event, that can be catched with $this->on.
@@ -28,13 +37,16 @@ class EventBinder {
 	public function trigger ($event, $args = array()) {
 		if (!isset($this->bindings[$event])) return;
 
+		$results = array();
+		
 		foreach ($this->bindings[$event] as $k => $v) {
 			list($eCall, $eThat) = $v;
 			if ($eThat !== null) {
 				$eCall = \Closure::bind($eCall, $eThat);
 			}
-			call_user_func_array($eCall, $args);
+			$results[] = call_user_func_array($eCall, $args);
 		}
+		return $results;
 	}
 
 	/**

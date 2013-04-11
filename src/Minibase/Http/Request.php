@@ -35,5 +35,26 @@ class Request {
 		$req->uri = $_SERVER['QUERY_STRING'] ?: (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/');
 		return $req;
 	}
+	
+	
+	/**
+	 * @return string Returns the raw HTTP request body as a string.
+	 */
+	public function raw () {
+		return file_get_contents('php://input');
+	}
 
+	/**
+	 * Useful for JSON API's.
+	 * @return mixed Returns the HTTP request body as JSON decoded to array.
+	 * @throws Minibase\Http\InvalidJsonRequestException if json string is malformated.
+	 */
+	public function json () {
+		$json = json_decode($this->raw());
+		if (!$json){
+			throw new InvalidJsonRequestException("Invalid JSON request.");
+		}	
+		return $json;
+	}
+	
 }

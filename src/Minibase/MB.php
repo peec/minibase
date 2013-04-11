@@ -56,8 +56,16 @@ class MB{
 					$call = \Closure::bind($call, $this);
 				}
 				
-				$resp = call_user_func_array($call, array($this->request->params, $this));
-				
+				try {
+					$resp = call_user_func_array($call, array($this->request->params, $this));
+					
+				} catch (Http\InvalidJsonRequestException $e) {
+					if (!$this->events->hasOn("mb:error:400")){
+						throw $e;
+					} else {
+						$resp = $this->events->trigger("mb:error:400", array($e))[0];
+					}
+				}
 				
 				
 				if (!($resp instanceof Response)){
