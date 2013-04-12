@@ -13,6 +13,7 @@ There are two kinds of plugins in Minibase:
 
 * [Callback plugins](#callback-plugins)
 * [Class plugins](#class-plugins)
+* [Built in plugins](#built-in-plugins)
 
 
 
@@ -63,6 +64,46 @@ A callback plugin is registered with class plugins, the name will be the full pa
 
 
 
+## Built in plugins
 
+By default, Minibase comes included with some optional plugins. These are separate from the application, and the plugins can even be deleted without affecting anything on the application.
+
+
+### CSRF Protection plugin
+
+Handle evil CSRF attacks for all your routes except GET.
+
+
+### Configuration array:
+
+- store: By default it uses cookie, any other value will use SESSION. Note SESSION must be started if session is used.
+- token_name: the name of the token. Default is "csrfToken".
+
+### Install
+
+Add the plugin to your app:
+
+```php
+$mb->initPlugins(array(
+	`Minibase\Plugins\Csrf\CsrfPlugin` => null // See Configuration array for customizable configs.
+));
+```
+
+Add this to your forms, it creates a hidden input element with the csrf token.
+
+```php
+<?php echo $csrfTokenInput ?>
+```
+
+You may customize the error exception if a token is invalid by adding event handler.
+
+
+```php
+$mb->events->on("csrf:invalid", function ($request) {
+	return function () {
+		return $this->respond("html")->view("csrfinvalid.html.php");
+	};
+});
+```
 
 
