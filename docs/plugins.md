@@ -14,6 +14,7 @@ There are two kinds of plugins in Minibase:
 * [Callback plugins](#callback-plugins)
 * [Class plugins](#class-plugins)
 * [Built in plugins](#built-in-plugins)
+  * [CSRF Protection plugin](#csrf-protection-plugin)
 
 
 
