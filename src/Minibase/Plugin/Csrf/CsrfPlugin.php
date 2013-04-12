@@ -73,7 +73,7 @@ class CsrfPlugin extends Plugin {
 			$args[$that->tokenName()] = $that->getServerToken();
 			
 			// Assigns a view variable (appends "Input" in the end so it can add hidden input field.
-			$args[$that->tokenName() . "Input"] = $that->getServerToken();
+			$args[$that->tokenName() . "Input"] = '<input type="hidden" name="'.$that->tokenName().'" value="'.$that->getServerToken().'" />';
 		};
 		
 			
