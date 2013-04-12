@@ -74,12 +74,12 @@ By default, Minibase comes included with some optional plugins. These are separa
 Handle evil CSRF attacks for all your routes except GET.
 
 
-### Configuration array:
+#### Configuration array:
 
 - store: By default it uses cookie, any other value will use SESSION. Note SESSION must be started if session is used.
 - token_name: the name of the token. Default is "csrfToken".
 
-### Install
+#### Install
 
 Add the plugin to your app:
 
