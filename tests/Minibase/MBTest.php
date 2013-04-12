@@ -36,7 +36,7 @@ class MBTest extends \PHPUnit_Framework_TestCase{
 	 */
 	public function testShouldThrowExceptionIfNotReturnResponse () {
 		$mb = $this->mockRoute("get", "/");
-		$mb->on("get", "/", function () {
+		$mb->route("get", "/", function () {
 			
 		});
 	}
@@ -55,7 +55,7 @@ class MBTest extends \PHPUnit_Framework_TestCase{
 		
 		
 		
-		$mb->on("get", "/test/(\d+)", array($mock, 'myCallback'));
+		$mb->route("get", "/test/(\d+)", array($mock, 'myCallback'));
 		
 	}
 	

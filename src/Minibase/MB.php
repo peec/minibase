@@ -1,6 +1,8 @@
 <?php
 namespace Minibase;
 
+use Minibase\Plugin\Plugin;
+
 use Minibase\Http\Response;
 
 use Minibase\Http\Request;
@@ -69,38 +71,17 @@ class MB{
 	 * @return Minibase\MB
 	 * @throws InvalidControllerReturnException
 	 */
-	public function on ($method, $url, $call) {
-		
+	public function route ($method, $url, $call) {
+			
 		if ($this->request->method === strtolower($method)) {
 			$uri = $this->request->uri;
-			
 			if(preg_match("#^$url$#i", $uri, $matches)) {
 				
 				$this->request->params = array_slice($matches, 1);
 				// Trigger event mb:route:before and send Request instance to it.
 				$this->events->trigger("mb:route:before", array($this->request));
 				
-				// if not array (obj, method) or function call, bind $this.
-				if (!is_array($call) && !is_string($call)){
-					$call = \Closure::bind($call, $this);
-				}
-				
-				try {
-					$resp = call_user_func_array($call, array($this->request->params, $this));
-					
-				} catch (Http\InvalidJsonRequestException $e) {
-					if (!$this->events->hasOn("mb:error:400")){
-						throw $e;
-					} else {
-						$resp = $this->events->trigger("mb:error:400", array($e))[0];
-					}
-				}
-				
-				
-				if (!($resp instanceof Response)){
-					throw new InvalidControllerReturnException("Controllers must return instances of a Response.");
-				}
-				$resp->execute();
+				$resp = $this->executeCall($call);
 				
 				$this->events->trigger("mb:route:after", array($this->request, $resp));
 			}
@@ -108,6 +89,31 @@ class MB{
 			
 		}
 		return $this;
+	}
+	
+	public function executeCall ($call) {
+		// if not array (obj, method) or function call, bind $this.
+		if (!is_array($call) && !is_string($call)){
+			$call = \Closure::bind($call, $this);
+		}
+		
+		try {
+			$resp = call_user_func_array($call, array($this->request->params, $this));
+				
+		} catch (Http\InvalidJsonRequestException $e) {
+			if (!$this->events->hasOn("mb:error:400")){
+				throw $e;
+			} else {
+				$resp = $this->events->trigger("mb:error:400", array($e))[0];
+			}
+		}
+		
+		
+		if (!($resp instanceof Response)){
+			throw new InvalidControllerReturnException("Controllers must return instances of a Response.");
+		}
+		$resp->execute();
+		return $resp;
 	}
 	
 	/**
@@ -120,14 +126,43 @@ class MB{
 		$this->plugins[$name] = array($call, false);
 	}
 	
+	
+	public function initPlugins (array $plugins) {
+		$i = 0;
+		foreach ($plugins as $p => $config) {
+			
+			$this->plugin($p, function () use ($p, $config, $i) {
+				if (class_exists($p)) {
+					$cls = new $p($config);
+					if (!($cls instanceof Plugin)) {
+						throw new \Exception("Plugin [$p] must extend Minibase\Plugin\Plugin abstract class.");
+					}
+					$cls->setApp($this);
+					return $cls;
+				} else {
+					throw new \Exception("Plugin [$i] must be callable or a class extending Minibase\Plugin\Plugin.");
+				}	
+			});
+			// Start.
+			$this->$p->start();
+			
+			$i++;
+		}
+	}
+	
+	
+	public function __get($name){
+		return $this->get($name);
+	}
+	
 	/**
 	 * Returns a plugin if it exists, throws Exception otherwise.
 	 * If it's already initialized it returns the cached result.
-	 * 
+	 *
 	 * @param string $name Plugin name
 	 * @throws Exception
 	 */
-	public function __get($name){
+	public function get ($name) {
 		if (!isset($this->plugins[$name])){
 			throw new Exception("Plugin {$name} does not exist. ");
 		}
@@ -135,7 +170,7 @@ class MB{
 		
 		if (!$initialized){
 			$call = \Closure::bind($call, $this);
-			
+				
 			$this->plugins[$name][0] = $call();
 			$this->plugins[$name][1] = true;
 		}

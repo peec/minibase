@@ -21,9 +21,17 @@ class Request {
 	
 	/**
 	 * 
+	 * @var boolean TRUE if HTTPS, FALSE otherwise.
+	 */
+	public $isSecure;
+	
+	/**
+	 * 
 	 * @var array Array of arguments to this uri.
 	 */
 	public $params;
+	
+	
 
 	/**
 	 * Returns a Request object from the global $_SERVER vars.
@@ -33,6 +41,7 @@ class Request {
 		$req = new Request();
 		$req->method = strtolower($_SERVER['REQUEST_METHOD']);
 		$req->uri = $_SERVER['QUERY_STRING'] ?: (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/');
+		$req->isSecure =  isset($_SERVER["HTTPS"]) ? true : false;
 		return $req;
 	}
 	

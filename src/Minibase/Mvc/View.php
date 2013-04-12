@@ -62,7 +62,7 @@ class View{
 		$viewPath = $this->viewPath;
 		
 		$callback = function($vars) use ($view, $viewPath) {
-			$this->events->trigger("before:render", [$view, &$vars]);
+			$this->events->trigger("before:render", [$this, &$vars]);
 			extract($vars);
 				
 			include ($viewPath ?: "") . $view;

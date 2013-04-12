@@ -33,19 +33,25 @@ class EventBinder {
 	 * Triggers an event, that can be catched with $this->on.
 	 * @param string $event Event name
 	 * @param array $args Array of arguments to pass to the callback.
+	 * @param callback $callbackIfNoListeners Callback to run if no listeners has been set up.
 	 */
-	public function trigger ($event, $args = array()) {
-		if (!isset($this->bindings[$event])) return;
+	public function trigger ($event, $args = array(), $callbackIfNoListeners = null) {
 
 		$results = array();
-		
-		foreach ($this->bindings[$event] as $k => $v) {
-			list($eCall, $eThat) = $v;
-			if ($eThat !== null) {
-				$eCall = \Closure::bind($eCall, $eThat);
+			
+		if (isset($this->bindings[$event])) {
+			foreach ($this->bindings[$event] as $k => $v) {
+				list($eCall, $eThat) = $v;
+				if ($eThat !== null) {
+					$eCall = \Closure::bind($eCall, $eThat);
+				}
+				$results[] = call_user_func_array($eCall, $args);
 			}
-			$results[] = call_user_func_array($eCall, $args);
 		}
+		if (empty($results) && $callbackIfNoListeners !== null) {
+			$results[] = call_user_func_array($callbackIfNoListeners, $args);;
+		}
+		
 		return $results;
 	}
 
@@ -63,5 +69,6 @@ class EventBinder {
 			}
 		}
 	}
+	
 
 }

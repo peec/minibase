@@ -7,7 +7,7 @@
 require __DIR__ . '/app.php';
 
 // Homepage.
-$app->on('get', '/', function () {
+$app->route('get', '/', function () {
 
 	return $this->respond("html")->view(__DIR__ . "/views/homepage.html.php");
 });
