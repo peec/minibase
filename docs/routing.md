@@ -2,6 +2,20 @@
 
 Routing is ment to be simple. You can route HTTP requests to callbacks or object methods. Routing is accessible from the Minibase\MD class.
 
+
+
+
+A simple route with a callback that returns a view.
+
+```php
+$app->route("get", "/", function ($params, $that) {
+	// Some logic.
+	return $this->respond("html")
+		->view("views/homepage.html.php");
+});
+```
+
+
 The callback must return a instance of `Minibase\Http\Response`. There are some built in response objects such as:
 
 - html: HtmlResponse
@@ -11,22 +25,10 @@ The callback must return a instance of `Minibase\Http\Response`. There are some 
 `$this` is bound to the callback so you can use `$this->respond(response_key)->belonging_method()` to return a response.
 
 
-
-
-A simple route with a callback that returns a view.
-
-```php
-$app->on("get", "/", function ($params, $that) {
-	// Some logic.
-	return $this->respond("html")
-		->view("views/homepage.html.php");
-});
-```
-
 You can also use regular expressions in your routes.
 
 ```php
-$app->on("get", "/news/(\d+)", function ($params, $that) {
+$app->route("get", "/news/(\d+)", function ($params, $that) {
 	// use $params[0] (the Id of the news) to fetch from db..
 	
 	return $this->respond("html")
@@ -39,7 +41,7 @@ Delivering a JSON Response.
 
 
 ```php
-$app->on("get", "/api/news", function ($params, $that) {
+$app->route("get", "/api/news", function ($params, $that) {
 	$arrayOrObjectFromDatabase = ...;
 	
 	return $this->respond("json")
@@ -52,7 +54,7 @@ $app->on("get", "/api/news", function ($params, $that) {
 You can use the `$data = $this->request->json()` method inside the callback for a route. This gets a JSON request body as a php array. Useful for creating API's against JS frameworks such as Backbone etc. `$this->request->json()` throws `Minibase\Http\InvalidJsonRequestException` if invalid json is posted.
 
 ```php
-$mb->on("get", "/", function () {
+$mb->route("get", "/", function () {
 	$this->request->json();
 	// return something.	
 });

@@ -31,7 +31,7 @@ You can install Minibase with Composer.
 - No template engine.
 - Almost no learning curve.
 - Use the libraries you want, ie. Doctrine, Smarty, etc.
-- Event based architecture.
+- Event based architecture. Hook into any functionality of Minibase and add behavoir as your go!
 
 
 ### Routing.
@@ -44,7 +44,7 @@ There are no built in router configuration, it's neatly wrapped with a method th
 	$mb = \Minibase\MB::create();
 	
 	// Home page.
-	$mb->on("get", "/", function () {
+	$mb->route("get", "/", function () {
 		// some logic.
 		// And return.
 		return $this->respond("html")->view("views/test.html.php");
@@ -53,7 +53,7 @@ There are no built in router configuration, it's neatly wrapped with a method th
 
 
 	// Some JSON API.
-	$mb->on("get", "/api/news/list", function () {
+	$mb->route("get", "/api/news/list", function () {
 		// some logic.
 
 		return $this->respond("json")->data(array("hello", "world"));
@@ -61,7 +61,7 @@ There are no built in router configuration, it's neatly wrapped with a method th
 
 
 	// Redirect to google
-	$mb->on("get", "/i-want-to-google", function () {
+	$mb->route("get", "/i-want-to-google", function () {
 		// some logic.
 
 		return $this->respond("redirect")->to("http://google.com");
