@@ -17,12 +17,12 @@ abstract class Plugin {
 	 * 
 	 * @var Minibase\MB
 	 */
-	protected $mb;
+	public $mb;
 
 	/**
 	 * @var array Array of configuration values IF any.
 	 */
-	protected $config;
+	public $config;
 	
 	public function __construct ($config) {
 		$this->config = $config;
@@ -51,6 +51,6 @@ abstract class Plugin {
 	 * @param mixed $defaultValue Default value. Default is NULL
 	 */
 	public function cfg($key, $defaultValue = null) {
-		return is_array($this->config) && isset($this->config[$key]) && $this->config[$key] !== null ? $this->config[$key] : $defaultValue;
+		return is_array($this->config) && isset($this->config[$key]) ? $this->config[$key] : $defaultValue;
 	}
 }
