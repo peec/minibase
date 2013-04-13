@@ -73,7 +73,7 @@ class View{
 		$call($vars);
 
 		$content = ob_get_clean();
-		$this->events->trigger("after:render", [$view, $content]);
+		$this->events->trigger("after:render", [$view, &$content]);
 		return $content;
 	}
 

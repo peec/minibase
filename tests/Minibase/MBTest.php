@@ -39,6 +39,7 @@ class MBTest extends \PHPUnit_Framework_TestCase{
 		$mb->route("get", "/", function () {
 			
 		});
+		$mb->start();
 	}
 	
 	public function testRegularExpInRouteParameter () {
@@ -57,9 +58,17 @@ class MBTest extends \PHPUnit_Framework_TestCase{
 		
 		$mb->route("get", "/test/(\d+)", array($mock, 'myCallback'));
 		
+		$mb->start();
 	}
 	
-	
+	/**
+	 * @expectedException Minibase\RouteNotFoundException
+	 */
+	public function testRouteNotFound () {
+		$mb = $this->mockRoute("get", "/test/2");
+		
+		$mb->start();
+	}
 	
 
 	public function testPluginIsAccessibleAfterInit () {

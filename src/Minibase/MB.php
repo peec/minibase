@@ -35,6 +35,9 @@ class MB{
 	 */
 	public $request;
 	
+	
+	protected $routes = array();
+	
 
 	/**
 	 * Configuration set by setConfig
@@ -72,6 +75,16 @@ class MB{
 	 * @throws InvalidControllerReturnException
 	 */
 	public function route ($method, $url, $call) {
+		array_push($this->routes, array($method, $url, $call));
+	}
+	
+	/**
+	 * Executes a route if it's correct uri and request method.
+	 * @param string $method HTTP request method, ie. get,post,delete,put,patch
+	 * @param string $url url starting with "/"
+	 * @param callback $call Callback.
+	 */
+	public function executeRoute ($method, $url, $call) {
 			
 		if ($this->request->method === strtolower($method)) {
 			$uri = $this->request->uri;
@@ -84,11 +97,13 @@ class MB{
 				$resp = $this->executeCall($call);
 				
 				$this->events->trigger("mb:route:after", array($this->request, $resp));
+				
+				return true;
 			}
 			
 			
 		}
-		return $this;
+		return false;
 	}
 	
 	public function executeCall ($call) {
@@ -203,5 +218,29 @@ class MB{
 	public function setConfig($key, $value) {
 		$this->cfg[$key] = $value;
 		return $this;
+	}
+	
+	/**
+	 * Starts the Minibase Application (starts handeling routes)
+	 */
+	public function start () {
+		$this->events->trigger("mb:start", [$this]);
+		foreach($this->routes as $route){
+			list($method, $uri, $call) = $route;
+			if ($this->executeRoute($method, $uri, $call)) {
+				return;
+			}
+		}
+		// 404 - No route found.
+		$this->executeCall($this->events->trigger(
+				'mb:exception:RouteNotFoundException',
+				array($this->request),
+				function () {
+					return function () {
+						throw new RouteNotFoundException("Could not find route for {$this->request->method} {$this->request->uri}. Catch event mb:exception:RouteNotFoundException to handle this error.");
+					};
+				}
+				)[0]);
+		
 	}
 }
