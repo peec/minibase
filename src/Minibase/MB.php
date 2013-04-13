@@ -207,7 +207,8 @@ class MB{
 				return new Http\RedirectResponse($this->events);
 				break;
 			case "html":
-				return new Http\HtmlResponse($this->events, ($this->cfg[self::CFG_VIEWPATH] ?: null));
+				$viewPath = isset($this->cfg[self::CFG_VIEWPATH]) ? $this->cfg[self::CFG_VIEWPATH] : null;
+				return new Http\HtmlResponse($this->events, $viewPath);
 				break;
 			default: 
 				throw new \Exception("No such response type.");
