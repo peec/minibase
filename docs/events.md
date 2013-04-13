@@ -2,6 +2,14 @@
 
 Remember that Minibase has Event driven architecture. This makes  is really easy to extend functionality of minibase, you can hook into exisiting functionality and add your custom logic. Here we descibe events that Minibase triggers on different scenarios.
 
+You can easily listen on events by using the instance of the event aggregator in you `$mb` object.
+
+```php
+$mb->events->on("event name", function (some arguments that gets passed...) {
+  // Run something when this event is fired.
+});
+```
+
 
 
 ## Built in events
