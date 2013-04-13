@@ -26,6 +26,19 @@ Triggered right before running a callback when a route matched the URI.
 Triggered after a callback for a given route has been executed and content has been served.
 
 
+#### mb:exception:RouteNotFoundException (Minibase\Http\Request $request)
+
+Triggered when no route matched the uri / request method. Listen on this event to create a custom 404 page. Example:
+
+```php
+$mb->events->on("mb:exception:RouteNotFoundException", function ($request) {
+  return function () { // $this is bound to $mb
+    return $this->respond("html")->view("404page.html.php");
+  };
+});
+```
+
+
 
 ### View
 
