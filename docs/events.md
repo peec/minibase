@@ -40,9 +40,11 @@ Triggered when no route matched the uri / request method. Listen on this event t
 
 ```php
 $mb->events->on("mb:exception:RouteNotFoundException", function ($request) {
-  return function () { // $this is bound to $mb
-    return $this->respond("html")->view("404page.html.php");
-  };
+	return function () use ($request) {
+		return $this->respond("html")
+			->view("404.html.php", array('request' => $request))
+			->with(404);
+	};
 });
 ```
 
