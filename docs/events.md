@@ -27,7 +27,7 @@ Triggered after a callback for a given route has been executed and content has b
 Triggered right before we render a template. Global view vars (available for all templates, forexample) is easy to add. Remember that $viewVars is here a reference to an array of view vars with $key->$value being available as a variable in the views.
 
 
-#### after:render (Minibase\Mvc\View $view, string $content)
+#### after:render (Minibase\Mvc\View $view, string &$content)
 
 
 Triggered after content has been rendered, but not echoed out yet. Useful to modify output after it has been rendered.
