@@ -66,6 +66,9 @@ There are no built in router configuration, it's neatly wrapped with a method th
 
 		return $this->respond("redirect")->to("http://google.com");
 	});
+	
+	// Start handeling routes.
+	$mb->start();
 ```
 
 ### Extensible.
