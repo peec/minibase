@@ -7,6 +7,13 @@ Remember that Minibase has Event driven architecture. This makes  is really easy
 ## Built in events
 
 
+### Minibase
+
+#### mb:start (\Minibase\MB $mb)
+
+Triggered once the `start` method is run.
+
+
 ### Routing
 
 #### mb:route:before  (Minibase\Http\Request $request)
