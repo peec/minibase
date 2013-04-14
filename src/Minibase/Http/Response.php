@@ -51,8 +51,11 @@ abstract class Response{
 		foreach($this->headers as $name => $val) {
 			header("{$name}: {$val}");
 		}
-		http_response_code($this->statusCode);
 		if ($this->body !== null){
+			if ($this->statusCode !== 200) {
+				http_response_code($this->statusCode);
+			}
+			
 			echo $this->body;
 		}
 		$this->after();
