@@ -16,6 +16,17 @@ class RedirectResponse extends Response {
 		$this->headers["Location"] = $location;
 		return $this;
 	}
+	
+	/**
+	 * Redirects to internal site. Using the base URL before $location.
+	 * @param unknown_type $location
+	 */
+	public function toThis ($location) {
+		$dr = $_SERVER['DOCUMENT_ROOT'];
+		$path = dirname($_SERVER['SCRIPT_FILENAME']);
+		$base = substr($path, strlen($dr));
+		return $this->to("{$base}/{$location}");
+	}
 
 	public function after () {
 		die();
