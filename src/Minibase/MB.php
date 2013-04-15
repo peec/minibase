@@ -229,9 +229,16 @@ class MB{
 		foreach($this->routes as $route){
 			list($method, $uri, $call) = $route;
 			if ($this->executeRoute($method, $uri, $call)) {
+				
+				// Unbind flash scope
+				if (isset($_SESSION) && isset($_SESSION['flash_msg'])) {
+					unset($_SESSION['flash_msg']);
+				}
+				
 				return;
 			}
 		}
+		
 		// 404 - No route found.
 		$this->executeCall($this->events->trigger(
 				'mb:exception:RouteNotFoundException',

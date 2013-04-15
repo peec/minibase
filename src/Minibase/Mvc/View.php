@@ -58,6 +58,9 @@ class View{
 	 */
 	public function render ($view, $vars = array()) {
 
+		if (isset($_SESSION) && isset($_SESSION['flash_msg'])) {
+			$vars['flash'] = $_SESSION['flash_msg'];
+		}
 		
 		$viewPath = $this->viewPath;
 		
