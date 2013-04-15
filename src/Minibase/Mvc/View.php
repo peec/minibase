@@ -84,6 +84,7 @@ class View{
 		$dr = $_SERVER['DOCUMENT_ROOT'];
 		$path = dirname($_SERVER['SCRIPT_FILENAME']);
 		$base = substr($path, strlen($dr));
-		echo $base . "/{$resource}";
+		
+		echo (substr($base, 0, 1) == '/' ? '' : '/') . $base . "/{$resource}";
 	}
 }

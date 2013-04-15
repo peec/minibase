@@ -36,7 +36,7 @@ class RedirectResponse extends Response {
 		$dr = $_SERVER['DOCUMENT_ROOT'];
 		$path = dirname($_SERVER['SCRIPT_FILENAME']);
 		$base = substr($path, strlen($dr));
-		return $this->to("{$base}/{$location}");
+		return $this->to((substr($base, 0, 1) == '/' ? '' : '/') . "{$base}/{$location}");
 	}
 
 	public function after () {
