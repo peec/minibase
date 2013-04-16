@@ -40,7 +40,9 @@ class Request {
 	static public function createFromGlobals () {
 		$req = new Request();
 		$req->method = strtolower($_SERVER['REQUEST_METHOD']);
-		$req->uri = $_SERVER['QUERY_STRING'] ?: (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/');
+		
+		$uri = substr($_SERVER['PHP_SELF'], strlen($_SERVER['SCRIPT_NAME']));
+		$req->uri = $uri ?: '/';
 		$req->isSecure =  isset($_SERVER["HTTPS"]) ? true : false;
 		return $req;
 	}
