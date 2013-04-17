@@ -11,8 +11,7 @@ use Minibase\Mvc\View;
 class HtmlResponse extends Response{
 	private $viewPath; 
 
-	public function __construct($events, $viewPath) {
-		parent::__construct($events);
+	public function __construct($viewPath) {
 		$this->viewPath = $viewPath;
 	}
 	/**

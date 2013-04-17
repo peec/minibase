@@ -8,8 +8,8 @@ class ResponseTest extends \PHPUnit_Framework_TestCase{
 	
 	public function testResponseHasGoodDefaults () {
 
-		$r = $this->getMockForAbstractClass('Minibase\Http\Response', array(new EventBinder()));
-		
+		$r = $this->getMockForAbstractClass('Minibase\Http\Response');
+		$r->setEvents(new EventBinder());
 		$this->assertEquals(null, $r->body);
 		$this->assertInstanceOf('Minibase\Wreqr\EventBinder', $r->events);
 		$this->assertEmpty($r->headers);

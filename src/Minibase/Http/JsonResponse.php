@@ -10,8 +10,7 @@ use Minibase\Wreqr\EventBinder;
  */
 class JsonResponse extends Response {
 
-	public function __construct (EventBinder $events) {
-		parent::__construct($events);
+	public function __construct () {
 		$this->headers["content-type"] = "application/json";
 	}
 

@@ -199,21 +199,42 @@ class MB{
 	 * @return Minibase\Http\Response
 	 */
 	public function respond($type = 'html'){
-		switch($type) {
-			case "json":
-				return new Http\JsonResponse($this->events);
-				break;
-			case "redirect":
-				return new Http\RedirectResponse($this->events);
-				break;
-			case "html":
+		
+		$map = array(
+			'json' => function () {
+				return new Http\JsonResponse();
+			},
+			'redirect' => function () {
+				return new Http\RedirectResponse();
+			},
+			'html' => function () {
 				$viewPath = isset($this->cfg[self::CFG_VIEWPATH]) ? $this->cfg[self::CFG_VIEWPATH] : null;
-				return new Http\HtmlResponse($this->events, $viewPath);
-				break;
-			default: 
-				throw new \Exception("No such response type.");
-				break;
+				return new Http\HtmlResponse($viewPath);
+			}
+		);
+		
+		// Trigger event so it's possible to add more response types.
+		$this->events->trigger('mb:respond:before', array(&$map));
+		
+		
+		if (!isset($map[$type])){
+			throw new \Exception("No such response ($type).");
 		}
+		// Bind $this to closure.
+		$resp = $map[$type]->bindTo($this);
+		
+		// Get additional args.
+		$args = array_slice(func_get_args(), 1);
+		
+		// Call it.
+		$response = call_user_func_array($resp, $args);
+		if (!($response instanceof Http\Response)) {
+			throw new \Exception("Response of $type must return instance of Minibase\Http\Response.");
+		}
+		// DI events.
+		$response->setEvents($this->events);
+		
+		return $response;
 	}
 	
 	public function setConfig($key, $value) {

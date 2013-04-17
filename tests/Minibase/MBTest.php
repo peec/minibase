@@ -45,7 +45,7 @@ class MBTest extends \PHPUnit_Framework_TestCase{
 	public function testRegularExpInRouteParameter () {
 		$mb = $this->mockRoute("get", "/test/2");
 		
-		$resp = $this->getMockForAbstractClass('Minibase\Http\Response', array(new EventBinder()));
+		$resp = $this->getMockForAbstractClass('Minibase\Http\Response');
 		
 		$mock = $this->getMock('stdClass', array('myCallback'));
 		$mock->expects($this->once())

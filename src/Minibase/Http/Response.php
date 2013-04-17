@@ -33,9 +33,11 @@ abstract class Response{
 	 */
 	public $body = null;
 
-	public function __construct(EventBinder $events){
+	
+	public function setEvents (EventBinder $events) {
 		$this->events = $events;
 	}
+	
 
 	/**
 	 * Runs after respnse has been delivered.
