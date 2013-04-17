@@ -21,6 +21,32 @@ $mb->events->on("event name", function (some arguments that gets passed...) {
 
 Triggered once the `start` method is run.
 
+#### mb:respond:before (array &$map)
+
+`mb:respond:before` is triggered when `$mb->respond(TYPE)` is used. It's possible to add other response types by creating a `on` listener for this events. E.g. If you want to create a custom RSS response type, XML response type or any other response objects. Custom Response objects must extend `Minibase\Http\Response`.
+
+Sample of implementation:
+
+```php
+$mb->events->on("mb:respond:before", function (&$map) {
+	if (!isset($map['rss'])){
+		$map['rss'] = function ($data) {
+			$rssFeed = new MyNamespace\RssResponse();
+			$rssFeed->setData($data);
+			return $rssFeed;
+		};
+	}
+});
+
+// Now you can return rss feed response from your controller callbacks.
+$mb->route("get", "/rssfeed", function () {
+	return $this->respond("rss", array(/* data from database, */))
+		->setAuthor('My Name')
+		->customMethod('...etc..');
+});
+```
+
+
 
 ### Routing
 
