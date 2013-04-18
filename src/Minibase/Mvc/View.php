@@ -64,17 +64,20 @@ class View{
 		
 		$viewPath = $this->viewPath;
 		
-		$callback = function($vars) use ($view, $viewPath) {
-			$this->events->trigger("before:render", [$this, &$vars]);
-			extract($vars);
-				
-			include ($viewPath ?: "") . $view;
-		};
-
 		ob_start();
-		$call = \Closure::bind($callback, $this);
-		$call($vars);
+		
+		$this->events->trigger("before:render", [$this, &$vars]);
+		$call = $this->events->trigger("mb:render", array(), function() {	
+			return function ($vars, $view, $viewPath) {
+				extract($vars);
+				include ($viewPath ?: "") . $view;
+			};
+		})[0];
+		
+		$call = \Closure::bind($call, $this);
+		$call($vars, $view, $viewPath);
 
+		
 		$content = ob_get_clean();
 		$this->events->trigger("after:render", [$view, &$content]);
 		return $content;
