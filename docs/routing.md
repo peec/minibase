@@ -1,9 +1,10 @@
 # Routing
 
-Routing is ment to be simple. You can route HTTP requests to callbacks or object methods. Routing is accessible from the Minibase\MD class.
+Routing is meant to be simple. You can route HTTP requests to callbacks or object methods. Routing is accessible from the Minibase\MD class.
 
 
 
+## Routes with callbacks
 
 A simple route with a callback that returns a view.
 
@@ -15,6 +16,36 @@ $app->route("get", "/", function ($params, $that) {
 });
 ```
 
+## Routes the OOP way.
+
+You can create route files that contains a JSON formatted file that contains your routes. A sample implementation of a `routes.json` file:
+
+
+```json
+[
+	["get", "/test", "MyController.test"]
+]
+```
+
+
+
+And then in your php script:
+
+```php
+class MyController extends Minibase\Mvc\Controller{
+	
+	public function test () {
+		return $this->respond("html")
+		->view('index.html.php');
+	}
+}
+
+$mb->loadRouteFile(__DIR__ . '/routes.json');
+
+```
+
+
+## Route methods should return responses.
 
 The callback must return a instance of `Minibase\Http\Response`. There are some built in response objects such as:
 
@@ -24,6 +55,8 @@ The callback must return a instance of `Minibase\Http\Response`. There are some 
 
 `$this` is bound to the callback so you can use `$this->respond(response_key)->belonging_method()` to return a response.
 
+
+## Regular expressions in routes
 
 You can also use regular expressions in your routes.
 
@@ -37,7 +70,7 @@ $app->route("get", "/news/(\d+)", function ($params, $that) {
 ```
 
 
-Delivering a JSON Response.
+## Delivering a JSON Response.
 
 
 ```php
@@ -55,10 +88,13 @@ You can use the `$data = $this->request->json()` method inside the callback for 
 
 ```php
 $mb->route("get", "/", function () {
-	$this->request->json();
+	$requestData = $this->request->json();
 	// return something.	
 });
 ```
+
+
+## Custom 404 page.
 
 Creating a global 400 error, so you don't have to catch forexample `InvalidJsonRequestException` is easy. A sample implementation of this might be the following:
 
@@ -78,9 +114,11 @@ There are two parameters passed to the callback, `$params` and `$that`.
 
 Note that closures (anonymos functions) have `$this` bound to the application object.
 
-## Returning a Minibase\Http\Result
+## Returning a Minibase\Http\Response
 
-Every callback should return instance of `Minibase\Http\Result`, there are some built in Result types such as `Minibase\Http\HtmlResponse`, `Minibase\Http\JsonResponse` and `Minibase\Http\RedirectResponse`.
+Every callback should return instance of `Minibase\Http\Response`, there are some built in Result types such as `Minibase\Http\HtmlResponse`, `Minibase\Http\JsonResponse` and `Minibase\Http\RedirectResponse`.
 
 There are a helper method named `respond` in `Minibase\MB` that returns a Response object.
+
+
 
