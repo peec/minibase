@@ -1,6 +1,6 @@
 # Routing
 
-Routing is meant to be simple. You can route HTTP requests to callbacks or object methods. Routing is accessible from the Minibase\MD class.
+Routing is meant to be simple. You can route HTTP requests to callbacks or object methods. Routing is accessible from the Minibase\MD class. After all routes are defined a single call to `$mb->start()` should be provided so minibase can start finding a matching route based on the current HTTP request.
 
 
 
@@ -42,7 +42,10 @@ class MyController extends Minibase\Mvc\Controller{
 
 $mb->loadRouteFile(__DIR__ . '/routes.json');
 
+$mb->start(); // Starts the routing finder.
+
 ```
+
 
 
 ## Route methods should return responses.
@@ -55,6 +58,8 @@ The callback must return a instance of `Minibase\Http\Response`. There are some 
 
 `$this` is bound to the callback so you can use `$this->respond(response_key)->belonging_method()` to return a response.
 
+
+**Note! Its possible to inject custom response types, see events chapter of the documentation.**
 
 ## Regular expressions in routes
 
