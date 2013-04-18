@@ -1,0 +1,4 @@
+[
+	["get","/index", "TestController.index"],
+	["get","/test", "TestController.test"]	
+]

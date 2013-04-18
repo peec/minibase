@@ -42,24 +42,7 @@ class MBTest extends \PHPUnit_Framework_TestCase{
 		$mb->start();
 	}
 	
-	public function testRegularExpInRouteParameter () {
-		$mb = $this->mockRoute("get", "/test/2");
-		
-		$resp = $this->getMockForAbstractClass('Minibase\Http\Response');
-		
-		$mock = $this->getMock('stdClass', array('myCallback'));
-		$mock->expects($this->once())
-		->method('myCallback')
-		->with(array(2), $mb)
-		->will($this->returnValue($resp));
-		
-		
-		
-		
-		$mb->route("get", "/test/(\d+)", array($mock, 'myCallback'));
-		
-		$mb->start();
-	}
+	
 	
 	/**
 	 * @expectedException Minibase\RouteNotFoundException
@@ -85,6 +68,19 @@ class MBTest extends \PHPUnit_Framework_TestCase{
 		
 	}
 	
+	/**
+	 * @expectedException Minibase\InvalidControllerReturnException
+	 */
+	public function testLoadRouteFromFile () {
+		$mb = $this->mockRoute("get", "/index");
+		// Include a controller
+		include_once MB_RESOURCE_DIR . 'TestController.php';
+		
+		$mb->loadRouteFile(MB_RESOURCE_DIR . 'routes.json');
+		
+		// But InvalidControllerReturnException is expected, no response was returned..
+		$mb->start();
+	}
 	
 	
 	

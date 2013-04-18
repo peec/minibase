@@ -1,6 +1,8 @@
 <?php
 namespace Minibase;
 
+use Minibase\Mvc\RouteParser\RouteParser;
+
 use Minibase\Plugin\Plugin;
 
 use Minibase\Http\Response;
@@ -12,7 +14,7 @@ use Minibase\Http;
 
 /**
  * Application stub for a simple application.
- * 
+ * @property mixed $plugins
  * @author peec
  */
 class MB{
@@ -107,8 +109,18 @@ class MB{
 	}
 	
 	public function executeCall ($call) {
-		// if not array (obj, method) or function call, bind $this.
-		if (!is_array($call) && !is_string($call)){
+		
+		
+		// Controller / method handle.
+		if (is_array($call)) {
+			list ($controller, $method) = $call;
+			$contrInstance = new $controller();
+			if (!($contrInstance instanceof Mvc\Controller)) {
+				throw new \Exception("$controller must extend Minibase\\Mvc\\Controller.");
+			}
+			$contrInstance->setMB($this);
+			$call = array($contrInstance, $method);
+		} else { // Expect closure.
 			$call = \Closure::bind($call, $this);
 		}
 		
@@ -261,6 +273,8 @@ class MB{
 			}
 		}
 		
+		
+		
 		// 404 - No route found.
 		$this->executeCall($this->events->trigger(
 				'mb:exception:RouteNotFoundException',
@@ -272,5 +286,14 @@ class MB{
 				}
 				)[0]);
 		
+	}
+	
+	/**
+	 * Loads a router file that includes instructions in JSON format for routing.
+	 * @param string $filePath Full file path to the JSON file.
+	 */
+	public function loadRouteFile ($filePath) {
+		$routeParser = RouteParser::fromFile($filePath, $this);
+		$routeParser->parse();
 	}
 }
