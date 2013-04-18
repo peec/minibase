@@ -97,3 +97,27 @@ $mb->events->on("before:render", function ($view, &$args) {
 Triggered after content has been rendered, but not echoed out yet. Useful to modify output after it has been rendered.
 
 
+#### mb:render ()
+
+Should return a callback that renders a view.  `$this` will be bound to the `View` instance. The callback takes 3 arguments.  
+
+- `$vars` view vars assigned from the template.. 
+- `$view` The view file.
+- `$viewPath` Path to where the view `$view` is located. Can be empty if global configuration is not set.
+
+
+
+Default implementation just extracts the variables to vars and includes the view.:
+
+```php
+function() {
+	return function ($vars, $view, $viewPath) {
+		extract($vars);
+		include ($viewPath ?: "") . $view;
+	};
+}
+
+```
+
+
+
