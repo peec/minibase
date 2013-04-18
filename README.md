@@ -25,6 +25,17 @@ You can install Minibase with Composer.
 3. Run `composer install`
 
 
+### Documentation.
+
+
+* [**Minibase**](docs/minibase.md): Configure the Minibase object.
+* [**Routing**](docs/routing.md): See how to do routing. 
+* [**Events**](docs/events.md): Minibase events, listen to these to extend minibase.
+* [**3rdparty plugins**](docs/3rdparty-plugins.md): Browse plugins to extend minibase.
+
+
+
+
 ### Simplicity
 
 - No database ORM / database layer built in.
@@ -40,18 +51,22 @@ You can install Minibase with Composer.
 There are no built in router configuration, it's neatly wrapped with a method that takes 3 arguments. HTTP method, uri and callback. 
 
 
-*Creating your app in ~9 lines of code*
+*Creating your app in ~11 lines of code*
 
 
 ```php
-	$mb = \Minibase\MB::create();
+	require 'vendor/autoload.php'; // Include composer autoloader
+
+	$mb = \Minibase\MB::create(); // Create one application object.
 	
+	// Add a route for your homepage
 	$mb->route("get", "/", function () {
 		// some logic.
-		// And return.
+		// And return a HtmlResponse object
 		return $this->respond("html")->view("views/test.html.php");
 	});
 	
+	// Start the router engine.
 	$mb->start();
 ```
 
@@ -69,6 +84,7 @@ Minibase has a simple plugin system whereas you can create global plugins and re
 	$mb->my_plugin->someMethodInSomethingClass();
 ```
 
+Minibase also comes with class plugin support, this is really powerful.
 
 ### Event based architecture.
 
@@ -82,17 +98,19 @@ Forexample you can listen on event on before route.
 	});
 ```
 
-You can also trigger custom events.
 
-```php
-	$mb->events->trigger("hello", array("World!"));
-```
-
-And listen to your event...
+Listen to your custom event "hello".
 
 ```php
 	$mb->events->on("hello", function ($arg1) {
 		echo "Hello  $arg1";
 	});
 ```
+
+Trigger a custom event
+
+```php
+	$mb->events->trigger("hello", array("World!"));
+```
+
 
