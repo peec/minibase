@@ -3,7 +3,7 @@
 
 ## Minibase
 
-Minibase is a small framework for RESTful PHP applications. Minibase is perfect to create API's for JS frameworks such as `Backbone`. It's also great to create small sites. Minibase provides you with some arcitecture, but doesn't enforce you to use any 3rdparty library. You can use the ORM, Logger, Template engine of your choice with minimal configuration due to the plugin system.
+Minibase is a small framework for RESTful PHP applications, based on [Event Driven Architecture](http://en.wikipedia.org/wiki/Event-driven_architecture). Minibase is perfect to create API's for JS frameworks such as `Backbone`. It's also great to create small sites. Minibase provides you with some arcitecture, but doesn't enforce you to use any 3rdparty library. You can use the ORM, Logger, Template engine of your choice with minimal configuration due to the plugin system.
 
 Minibase takes use of PHP 5.4 features such as Closure scope binding, so PHP 5.4+ is a must.
 
@@ -32,42 +32,25 @@ You can install Minibase with Composer.
 - Almost no learning curve.
 - Use the libraries you want, ie. Doctrine, Smarty, etc.
 - Event based architecture. Hook into any functionality of Minibase and add behavoir as your go!
-
+- 
 
 ### Routing.
 
 There are no built in router configuration, it's neatly wrapped with a method that takes 3 arguments. HTTP method, uri and callback. 
 
 
+*Creating your app in ~9 lines of code*
+
+
 ```php
-	// Create the app object.
 	$mb = \Minibase\MB::create();
 	
-	// Home page.
 	$mb->route("get", "/", function () {
 		// some logic.
 		// And return.
 		return $this->respond("html")->view("views/test.html.php");
 	});
-
-
-
-	// Some JSON API.
-	$mb->route("get", "/api/news/list", function () {
-		// some logic.
-
-		return $this->respond("json")->data(array("hello", "world"));
-	});
-
-
-	// Redirect to google
-	$mb->route("get", "/i-want-to-google", function () {
-		// some logic.
-
-		return $this->respond("redirect")->to("http://google.com");
-	});
 	
-	// Start handeling routes.
 	$mb->start();
 ```
 
