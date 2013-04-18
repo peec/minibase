@@ -34,8 +34,14 @@ abstract class Response{
 	public $body = null;
 
 	
+	public $request;
+	
 	public function setEvents (EventBinder $events) {
 		$this->events = $events;
+	}
+	
+	public function setRequest (Request $request) {
+		$this->request = $request;
 	}
 	
 

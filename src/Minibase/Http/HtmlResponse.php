@@ -22,6 +22,8 @@ class HtmlResponse extends Response{
 	 */
 	public function view ($view, $vars = array()) {
 		$v = new View($this->events, null, $this->viewPath);
+		$v->setRequest($this->request);
+		
 		$this->body = $v->render($view, $vars);
 
 		return $this;

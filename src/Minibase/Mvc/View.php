@@ -1,6 +1,8 @@
 <?php
 namespace Minibase\Mvc;
 
+use Minibase\Http\Request;
+
 use Minibase\Wreqr\EventBinder;
 
 /**
@@ -48,6 +50,7 @@ class View{
 	 */
 	public function import ($view, $vars = array()) {
 		$v = new View($this->events, $this);
+		$v->setRequest($this->request);
 		echo $v->render($view, $vars);
 	}
 
@@ -84,10 +87,12 @@ class View{
 	}
 
 	public function asset ($resource) {
-		$dr = $_SERVER['DOCUMENT_ROOT'];
-		$path = dirname($_SERVER['SCRIPT_FILENAME']);
-		$base = substr($path, strlen($dr));
-		
-		echo (substr($base, 0, 1) == '/' ? '' : '/') . $base . "/{$resource}";
+		echo $this->request->basePath . $resource;
 	}
+	
+	public function setRequest (Request $request) {
+		$this->request = $request;
+	}
+	
+	
 }

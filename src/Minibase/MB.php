@@ -233,6 +233,7 @@ class MB{
 		}
 		// DI events.
 		$response->setEvents($this->events);
+		$response->setRequest($this->request);
 		
 		return $response;
 	}

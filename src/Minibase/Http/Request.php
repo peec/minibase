@@ -31,6 +31,11 @@ class Request {
 	 */
 	public $params;
 	
+	/**
+	 * If url is forexample http://localhost/myapp/index.php , basePath is set to /myapp
+	 * @var string the base path to the script currently running.
+	 */
+	public $basePath;
 	
 
 	/**
@@ -39,10 +44,20 @@ class Request {
 	 */
 	static public function createFromGlobals () {
 		$req = new Request();
+		
+		// Set HTTP METHOD.
 		$req->method = strtolower($_SERVER['REQUEST_METHOD']);
 		
+		// Set URI
 		$uri = substr($_SERVER['PHP_SELF'], strlen($_SERVER['SCRIPT_NAME']));
 		$req->uri = $uri ?: '/';
+		
+		// Set base path.
+		$base = dirname($_SERVER['SCRIPT_NAME']);
+		$base =  (substr($base, 0, 1) == '/' ? '' : '/') . $base . '/';
+		$req->basePath = $base;
+		
+		
 		$req->isSecure =  isset($_SERVER["HTTPS"]) ? true : false;
 		return $req;
 	}
