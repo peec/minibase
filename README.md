@@ -32,7 +32,8 @@ You can install Minibase with Composer.
 - Almost no learning curve.
 - Use the libraries you want, ie. Doctrine, Smarty, etc.
 - Event based architecture. Hook into any functionality of Minibase and add behavoir as your go!
-- 
+
+
 
 ### Routing.
 
