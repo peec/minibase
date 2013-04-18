@@ -54,13 +54,18 @@ class Request {
 		
 		// Set base path.
 		$base = dirname($_SERVER['SCRIPT_NAME']);
-		$base =  (substr($base, 0, 1) == '/' ? '' : '/') . $base . '/';
+		$base =  (substr($base, 0, 1) == '/' ? '' : '/') . ($base ? $base : '');
+		if (strlen($base) > 1 && substr($base, strlen($base)-1) != '/') {
+			$base .= '/';
+		}
 		$req->basePath = $base;
 		
 		
 		$req->isSecure =  isset($_SERVER["HTTPS"]) ? true : false;
 		return $req;
 	}
+	
+	
 	
 	
 	/**
