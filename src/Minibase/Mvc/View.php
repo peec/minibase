@@ -49,7 +49,7 @@ class View{
 	 * @param array $vars Array of arguments.
 	 */
 	public function import ($view, $vars = array()) {
-		$v = new View($this->events, $this);
+		$v = new View($this->events, $this, $this->viewPath);
 		$v->setRequest($this->request);
 		echo $v->render($view, $vars);
 	}
