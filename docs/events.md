@@ -82,6 +82,14 @@ $mb->events->on("mb:exception:RouteNotFoundException", function ($request) {
 
 Triggered right before we render a template. Global view vars (available for all templates, forexample) is easy to add. Remember that $viewVars is here a reference to an array of view vars with $key->$value being available as a variable in the views.
 
+Sample implementation (Assigning a global `$user` variable if the user was logged in.)
+
+```php
+$mb->events->on("before:render", function ($view, &$args) {
+	$args['user'] = $this->user ?: null;
+	
+}, $mb);
+```
 
 #### after:render (Minibase\Mvc\View $view, string &$content)
 
