@@ -10,6 +10,8 @@ use Minibase\Http\Response;
 use Minibase\Http\Request;
 use Minibase\Wreqr\EventBinder;
 use Minibase\Http;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
  * Application stub for a simple application.
@@ -59,6 +61,9 @@ class MB{
 	 */
 	public $reverseCalls;
 	
+	
+	public $annotationReader;
+	
 	/**
 	 * 
 	 * @var string Config key for view path.
@@ -78,6 +83,12 @@ class MB{
 		$mb->request = Http\Request::createFromGlobals();
 		$mb->request->setMB($mb);
 		return $mb;
+	}
+	
+	public function __construct() {
+		AnnotationRegistry::registerFile(__DIR__ . '/Annotation/Annotations.php');
+		$this->annotationReader = new AnnotationReader();
+		
 	}
 	
 	/**

@@ -1,6 +1,9 @@
 <?php
 namespace Minibase\Mvc;
 
+
+use Minibase\Http\CachedResponse;
+
 use Minibase\MB;
 
 use Minibase\Http\Request;
@@ -8,8 +11,8 @@ use Minibase\Wreqr\EventBinder;
 use Minibase\InvalidControllerReturnException;
 use Minibase\Http\Response;
 use Minibase\Http\InvalidJsonRequestException;
-use Doctrine\Common\Annotations\AnnotationReader;
-	
+use Minibase\Annotation\CachedCall;
+
 class Call {
 	private $call;
 	private $mb;
@@ -97,6 +100,7 @@ class Call {
 		// Set the current call.
 		$this->mb->call = $this;
 			
+		$cacheSettings = null;
 		
 		// Controller / method handle.
 		if (is_array($call)) {
@@ -108,8 +112,26 @@ class Call {
 			
 			
 			
-			$annotationReader = new AnnotationReader();
-			$annotations = $annotationReader->getMethodAnnotations(new \ReflectionMethod($contrInstance, $method));
+			$annotations = $this->mb->annotationReader->getMethodAnnotations(new \ReflectionMethod($contrInstance, $method));
+			
+			
+			foreach($annotations as $anot) {
+				if ($anot instanceof CachedCall) {
+					if (!$anot->key) {
+						throw new \Exception ("$controller.$method: Annotation CachedCall must have a key parameter defined.");
+					} else {
+						$cacheSettings = $anot;
+					}
+				}
+			}
+			// Get cache.
+			if ($cacheSettings) {
+				$respCache = $this->mb->cache->get($cacheSettings->key);
+				if ($respCache) {
+					$respCache->execute();
+					return $respCache;
+				}
+			}
 			
 			
 		} else { // Expect closure.
@@ -128,6 +150,13 @@ class Call {
 			throw new InvalidControllerReturnException("Controllers must return instances of a Response.");
 		}
 		$resp->execute();
+		
+		// Save cache
+		if ($cacheSettings) {
+			$cachedResponse = new CachedResponse($resp->headers, $resp->body, $resp->statusCode);
+			$this->mb->cache->set($cacheSettings->key, $cachedResponse, $cacheSettings->expire);
+		}
+		
 		return $resp;
 	}
 	
