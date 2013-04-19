@@ -33,6 +33,17 @@ abstract class Plugin {
 	 */
 	abstract public function start();
 	
+	/**
+	 * Override to provide setup for the plugin
+	 */
+	public function setup () {
+		
+	}
+	
+	
+	/**
+	 * Override to provide stop method for the plugin.
+	 */
 	public function stop () {
 		
 	}

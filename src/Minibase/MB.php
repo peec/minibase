@@ -175,7 +175,10 @@ class MB{
 					if (!($cls instanceof Plugin)) {
 						throw new \Exception("Plugin [$p] must extend Minibase\Plugin\Plugin abstract class.");
 					}
+					// DI $MB
 					$cls->setApp($this);
+					// Run setup.
+					$cls->setup();
 					return $cls;
 				} else {
 					throw new \Exception("Plugin [$i] must be callable or a class extending Minibase\Plugin\Plugin.");
