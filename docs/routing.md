@@ -67,6 +67,26 @@ $mb->start(); // Starts the routing finder.
 ```
 
 
+### Caching a controller method.
+
+**Note, see cache chapter to enable caching. Caching must be enabled before this is possible.**
+
+Sometimes you might want to cache a controller's method. The `Response` will be cached.
+
+```php
+class MyController extends Minibase\Mvc\Controller{
+	/**
+	 * 0 = cache forever, any other is live for amount of seconds.
+	 * @Annotation\CachedCall(key="uniqueKey", expiery=0)
+	 */
+	public function test () {
+		return $this->respond("html")
+		->view('index.html.php');
+	}
+}
+```
+
+
 
 ## Route methods should return responses.
 
