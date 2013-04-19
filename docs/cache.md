@@ -41,6 +41,8 @@ Install memcache and the memcached php extension (sudo apt-get install php5-memc
 Sample implementation:
 
 ```php
+use Minibase\Cache\Memcached\MemcachedDriver;
+
 $mb->setCacheDriver(new MemcachedDriver(), array(
   'servers' => array(
 		['localhost', 11211]
