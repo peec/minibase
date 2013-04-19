@@ -31,6 +31,7 @@ You can install Minibase with Composer.
 * [**Minibase**](docs/minibase.md): Configure the Minibase object.
 * [**Routing**](docs/routing.md): See how to do routing, reverse routing and such.
 * [**Events**](docs/events.md): Minibase events, listen to these to extend minibase.
+* [**Plugins**](docs/plugins.md): Create your own plugins publish them to composer and share.
 * [**3rdparty plugins**](docs/3rdparty-plugins.md): Browse plugins to extend minibase.
 
 
