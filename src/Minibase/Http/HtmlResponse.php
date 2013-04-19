@@ -1,6 +1,8 @@
 <?php
 namespace Minibase\Http;
 
+use Minibase\MB;
+
 use Minibase\Mvc\View;
 
 /**
@@ -11,8 +13,11 @@ use Minibase\Mvc\View;
 class HtmlResponse extends Response{
 	private $viewPath; 
 
-	public function __construct($viewPath) {
+	private $mb;
+	
+	public function __construct($viewPath, MB $mb) {
 		$this->viewPath = $viewPath;
+		$this->mb = $mb;
 	}
 	/**
 	 * The view file to use as the response.
@@ -23,6 +28,7 @@ class HtmlResponse extends Response{
 	public function view ($view, $vars = array()) {
 		$v = new View($this->events, null, $this->viewPath);
 		$v->setRequest($this->request);
+		$v->setMB($this->mb);
 		
 		$this->body = $v->render($view, $vars);
 

@@ -40,7 +40,7 @@ class RouteParser {
 		foreach($this->routeConfig as $route) {
 			$bits = explode('.', $route[2]);
 			list ($controller, $method) = $bits;
-			$this->mb->route($route[0], $route[1], array($controller, $method));
+			$this->mb->route($route[0], $route[1], array($controller, $method), $route[2]);
 		}
 	}
 	

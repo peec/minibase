@@ -1,6 +1,8 @@
 <?php
 namespace Minibase\Mvc;
 
+use Minibase\MB;
+
 use Minibase\Http\Request;
 
 use Minibase\Wreqr\EventBinder;
@@ -18,6 +20,8 @@ class View{
 	public $events;
 	
 	private $viewPath;
+	
+	private $mb;
 
 	public function __construct(EventBinder $eventbinder, $parentView = null, $viewPath = null) {
 		$this->parentView = $parentView;
@@ -51,6 +55,7 @@ class View{
 	public function import ($view, $vars = array()) {
 		$v = new View($this->events, $this, $this->viewPath);
 		$v->setRequest($this->request);
+		$v->setMB($this->mb);
 		echo $v->render($view, $vars);
 	}
 
@@ -90,9 +95,19 @@ class View{
 		echo $this->request->basePath . $resource;
 	}
 	
+	public function call ($call) {
+		return $this->mb->call($call);
+	}
+	
+	public function setMB (MB $mb) {
+		$this->mb = $mb;
+	}
+	
 	public function setRequest (Request $request) {
 		$this->request = $request;
 	}
+	
+	
 	
 	
 }

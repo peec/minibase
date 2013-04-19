@@ -1,6 +1,8 @@
 <?php
 namespace Minibase;
 
+use Minibase\Mvc\Call;
+
 use Minibase\Mvc\RouteParser\RouteParser;
 
 use Minibase\Plugin\Plugin;
@@ -48,6 +50,19 @@ class MB{
 	private $cfg = array();
 	
 	/**
+	 * The current call being executed. Call has useful method such as reverse routing.
+	 * @var Minibase\Mvc\Call
+	 */
+	public $call;
+	
+	/**
+	 * Array of reverse calls available for reversion.
+	 * @var array Array of reverse calls.
+	 * @see MB::route
+	 */
+	public $reverseCalls;
+	
+	/**
 	 * 
 	 * @var string Config key for view path.
 	 */
@@ -73,12 +88,32 @@ class MB{
 	 * @param string $method The Request method (get,post,put,delete,etc..)
 	 * @param string $url The url starting with backslash, ie. "/" or "/hello/(\d+)". Can have regexp.
 	 * @param string $call A callback (closure) to run if the url and http method matches.
+	 * @param string $reverseKey A reverse route key that is unique to this route. 
 	 * @return Minibase\MB
 	 * @throws InvalidControllerReturnException
 	 */
-	public function route ($method, $url, $call) {
+	public function route ($method, $url, $call, $reverseKey = null) {
+		$call = new Call($call, array($method, $url, $reverseKey));
+		$call->setMB($this);
+		if ($reverseKey !== null) {
+			$this->reverseCalls[$reverseKey] = &$call;
+		}
 		array_push($this->routes, array($method, $url, $call));
 	}
+	
+	/**
+	 * Gets a call based on reverse key
+	 * 
+	 * @param string $reverseKey The key to reverse. If routing file is used use Controller.method syntax. Else use supplied $reverseKey.
+	 * @return Minibase\Mvc\Call A Call object, you may use reverse() on the call to get the URL for the call.
+	 */
+	public function & call ($reverseKey) {
+		if (!isset($this->reverseCalls[$reverseKey])) {
+			throw new \Exception ("Can not reverse call with $reverseKey, no such reverse Call found.");
+		}
+		return $this->reverseCalls[$reverseKey];
+	}
+	
 	
 	/**
 	 * Executes a route if it's correct uri and request method.
@@ -96,7 +131,8 @@ class MB{
 				// Trigger event mb:route:before and send Request instance to it.
 				$this->events->trigger("mb:route:before", array($this->request));
 				
-				$resp = $this->executeCall($call);
+				
+				$resp = $call->execute();
 				
 				$this->events->trigger("mb:route:after", array($this->request, $resp));
 				
@@ -108,40 +144,6 @@ class MB{
 		return false;
 	}
 	
-	public function executeCall ($call) {
-		
-		
-		// Controller / method handle.
-		if (is_array($call)) {
-			list ($controller, $method) = $call;
-			$contrInstance = new $controller();
-			if (!($contrInstance instanceof Mvc\Controller)) {
-				throw new \Exception("$controller must extend Minibase\\Mvc\\Controller.");
-			}
-			$contrInstance->setMB($this);
-			$call = array($contrInstance, $method);
-		} else { // Expect closure.
-			$call = \Closure::bind($call, $this);
-		}
-		
-		try {
-			$resp = call_user_func_array($call, array($this->request->params, $this));
-				
-		} catch (Http\InvalidJsonRequestException $e) {
-			if (!$this->events->hasOn("mb:error:400")){
-				throw $e;
-			} else {
-				$resp = $this->events->trigger("mb:error:400", array($e))[0];
-			}
-		}
-		
-		
-		if (!($resp instanceof Response)){
-			throw new InvalidControllerReturnException("Controllers must return instances of a Response.");
-		}
-		$resp->execute();
-		return $resp;
-	}
 	
 	/**
 	 * Registers a new plugin.
@@ -191,7 +193,7 @@ class MB{
 	 */
 	public function get ($name) {
 		if (!isset($this->plugins[$name])){
-			throw new Exception("Plugin {$name} does not exist. ");
+			throw new \Exception("Plugin {$name} does not exist. ");
 		}
 		list($call, $initialized) = $this->plugins[$name];
 		
@@ -221,7 +223,7 @@ class MB{
 			},
 			'html' => function () {
 				$viewPath = isset($this->cfg[self::CFG_VIEWPATH]) ? $this->cfg[self::CFG_VIEWPATH] : null;
-				return new Http\HtmlResponse($viewPath);
+				return new Http\HtmlResponse($viewPath, $this);
 			}
 		);
 		
@@ -274,7 +276,6 @@ class MB{
 		}
 		
 		
-		
 		// 404 - No route found.
 		$this->executeCall($this->events->trigger(
 				'mb:exception:RouteNotFoundException',
@@ -286,6 +287,23 @@ class MB{
 				}
 				)[0]);
 		
+	}
+	
+	/**
+	 * Executes a Call object or a closure.
+	 * If it's a closure it gets wrapped in a Call object before dispatched.
+	 * @param mixed $call Array($object, method) or Closure
+	 */
+	public function executeCall ($call) {
+		if (is_object($call) && $call instanceof Call) {
+			$call->execute();
+		} else if (is_callable($call)) {
+			$call = new Call($call);
+			$call->setMB($this);
+			$call->execute();
+		} else {
+			throw new \Exception ("Call is not callable. Cannot execute call.");
+		}
 	}
 	
 	/**

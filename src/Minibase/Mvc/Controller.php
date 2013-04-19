@@ -9,7 +9,7 @@ abstract class Controller {
 	 * 
 	 * @var Minibase\MB
 	 */
-	private $mb;
+	public $mb;
 	
 	final public function setMB (MB $mb) {
 		$this->mb = $mb;
