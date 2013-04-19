@@ -74,6 +74,7 @@ $mb->start(); // Starts the routing finder.
 Sometimes you might want to cache a controller's method. The `Response` will be cached.
 
 ```php
+use Minibase\Annotation;
 class MyController extends Minibase\Mvc\Controller{
 	/**
 	 * 0 = cache forever, any other is live for amount of seconds.
