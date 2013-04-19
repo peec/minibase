@@ -126,4 +126,93 @@ Every callback should return instance of `Minibase\Http\Response`, there are som
 There are a helper method named `respond` in `Minibase\MB` that returns a Response object.
 
 
+## Using .htaccess to remove "index.php"
+
+Obviously in production and even in development you would want to have `mod_rewrite` enabled to remove `index.php` from the URL so you get cleaner URLS. You must add rewrite rules aswell as setting a special custom var `SetEnv HTTP_MOD_REWRITE On`
+
+Sample of htaccess:
+
+```htaccess
+<IfModule mod_rewrite.c>
+	# Custom SetEnv, so reverse router in minibase knows that rewrite is enabled.
+	SetEnv HTTP_MOD_REWRITE On
+	# Rewrite away index.php.
+	RewriteEngine On
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^(.*)$ index.php?/$1 [L]
+</IfModule>
+```
+
+## Reverse routing
+
+Reverse routing is good, you would definately benefit for reverse routes instead of normal hardcoded urls. Reverse routing is simple. Reverse routing requires that you give a custom flag that is unique (the `$reverseKey`).
+
+Both the controller and view has access to a `call` method. This method returns a `Minibase\Mvc\Call` instance. The call method has a method named `reverse`. The `reverse` method returns a new instance of `Minibase\Mvc\ReversedCall`, it has a __toString method that returns the `url` property of the object.
+
+
+
+### Reverse routing callback routing
+
+Sample using callback
+
+```php
+$mb->route("get","/", function () {
+
+}, "homepage"); // Last flag important
+```
+
+You an reverse this route from any view or in a controller callback using the `call` method in the `MB` or `View` instance. 
+
+From a view file:
+
+```php
+<?php echo $this->call('homepage')->reverse() ?>
+```
+
+From a callback:
+
+```php
+$mb->route("get","/someothermethod", function () {
+	echo $this->call('homepage')->reverse();
+});
+
+```
+
+
+
+### Reverse routing with OOP routing
+
+
+If you are using the OOP way, things are more convenient for reverserouting, because the `Controller.method` is used as the `$reverseKey`.
+
+JSON router file:
+
+```json
+[
+	["get","/test", "MyController.test"]
+]
+```
+
+It's then reversable:
+
+```php
+$this->call('MyController.test')->reverse();
+```
+
+
+### Checking if a reversed route is active.
+
+Sometimes you need to check if a route is active.
+
+Take this example:
+
+```php
+// returns true if /news/43 is active.
+$this->call('News.showNewsItem')->reverse(array(43))->isActive();
+```
+
+
+
+
 
