@@ -117,7 +117,7 @@ $mb->route("get", "/", function () {
 ```
 
 
-## Custom 404 page.
+### Custom 400 page.
 
 Creating a global 400 error, so you don't have to catch forexample `InvalidJsonRequestException` is easy. A sample implementation of this might be the following:
 
