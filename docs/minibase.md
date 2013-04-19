@@ -1,3 +1,9 @@
+**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+
+- [Minibase](#minibase)
+	- [Configuration](#configuration)
+		- [Set view path](#set-view-path)
+
 # Minibase
 
 

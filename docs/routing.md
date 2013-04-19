@@ -1,3 +1,21 @@
+**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+
+- [Routing](#routing)
+	- [Routes with callbacks](#routes-with-callbacks)
+	- [Routes the OOP way.](#routes-the-oop-way)
+	- [Route methods should return responses.](#route-methods-should-return-responses)
+	- [Regular expressions in routes](#regular-expressions-in-routes)
+	- [Delivering a JSON Response.](#delivering-a-json-response)
+	- [Accepting json as raw format to callbacks.](#accepting-json-as-raw-format-to-callbacks)
+	- [Custom 404 page.](#custom-404-page)
+	- [Callback parameters](#callback-parameters)
+	- [Returning a Minibase\Http\Response](#returning-a-minibase\http\response)
+	- [Using .htaccess to remove "index.php"](#using-htaccess-to-remove-indexphp)
+	- [Reverse routing](#reverse-routing)
+		- [Reverse routing callback routing](#reverse-routing-callback-routing)
+		- [Reverse routing with OOP routing](#reverse-routing-with-oop-routing)
+		- [Checking if a reversed route is active.](#checking-if-a-reversed-route-is-active)
+
 # Routing
 
 Routing is meant to be simple. You can route HTTP requests to callbacks or object methods. Routing is accessible from the Minibase\MD class. After all routes are defined a single call to `$mb->start()` should be provided so minibase can start finding a matching route based on the current HTTP request.

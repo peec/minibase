@@ -1,3 +1,10 @@
+**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+
+- [Plugins](#plugins)
+	- [Documentation Index](#documentation-index)
+	- [Callback plugins](#callback-plugins)
+	- [Class plugins](#class-plugins)
+
 # Plugins
 
 Plugins can be added to the application instance (`Minibase\MB`). 

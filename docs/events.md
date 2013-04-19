@@ -1,3 +1,19 @@
+**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+
+- [Events](#events)
+	- [Built in events](#built-in-events)
+		- [Minibase](#minibase)
+			- [mb:start (\Minibase\MB $mb)](#mbstart-\minibase\mb-$mb)
+			- [mb:respond:before (array &$map)](#mbrespondbefore-array-&$map)
+		- [Routing](#routing)
+			- [mb:route:before  (Minibase\Http\Request $request)](#mbroutebefore--minibase\http\request-$request)
+			- [mb:route:after (Minibase\Http\Request $request, Minibase\Http\Response, $response)](#mbrouteafter-minibase\http\request-$request-minibase\http\response-$response)
+			- [mb:exception:RouteNotFoundException (Minibase\Http\Request $request)](#mbexceptionroutenotfoundexception-minibase\http\request-$request)
+		- [View](#view)
+			- [before:render (Minibase\Mvc\View $view, array &$viewVars)](#beforerender-minibase\mvc\view-$view-array-&$viewvars)
+			- [after:render (Minibase\Mvc\View $view, string &$content)](#afterrender-minibase\mvc\view-$view-string-&$content)
+			- [mb:render ()](#mbrender-)
+
 # Events
 
 Remember that Minibase has Event driven architecture. This makes  is really easy to extend functionality of minibase, you can hook into exisiting functionality and add your custom logic. Here we descibe events that Minibase triggers on different scenarios.
