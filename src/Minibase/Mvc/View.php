@@ -107,6 +107,32 @@ class View{
 		$this->request = $request;
 	}
 	
+	/**
+	 * Caches a partial (fragment). 
+	 * @param string $key The key
+	 * @param callable $block A function that echo stuff.
+	 * @param int $expire Expire in seconds, 0 = forever.
+	 * @return string The content from cache or just from output. Next time served from cache.
+	 */
+	public function cache($key, callable $block, $expire = 0) {
+		ob_start();
+		// Eventuallty filled out.
+		$content = "";
+		
+		$cachedContent = $this->mb->cache->get($key);
+		
+		if ($cachedContent !== null) {
+			$content = $cachedContent;
+		} else {
+			$block = $block->bindTo($this);
+			ob_start();
+			$block();
+			$content = ob_get_clean();
+			$this->mb->cache->set($key, $content, $expire);
+		}
+		return $content;
+	}
+	
 	
 	
 	
