@@ -78,7 +78,7 @@ use Minibase\Annotation;
 class MyController extends Minibase\Mvc\Controller{
 	/**
 	 * 0 = cache forever, any other is live for amount of seconds.
-	 * @Annotation\CachedCall(key="uniqueKey", expiery=0)
+	 * @Annotation\CachedCall(key="uniqueKey", expire=0)
 	 */
 	public function test () {
 		return $this->respond("html")
