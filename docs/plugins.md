@@ -40,7 +40,7 @@ You can then use your database connections easily.
 
 
 ```php
-$app->on("get", "/", function () {
+$app->route("get", "/", function () {
 	$news = $this->db->fetch("SELECT * FROM news");
 	return ...;
 });
@@ -70,4 +70,44 @@ A callback plugin is registered with class plugins, the name will be the full pa
 
 
 
+### Sample plugin
 
+This plugin is just a sample, we want to log all URLS with our logger class `MyLogger`.
+
+We also take use of plugin `cfg` method and configuration sent to the plugin.
+
+```php
+namespace MyBusiness\Minibase\Plugin;
+
+use Minibase\Plugin\Plugin;
+
+class RouteLogger extends Plugin{
+	private $logEventOnRoute;
+	
+	public function start () {
+		// Create a callback.
+		$this->logEventOnRoute = function ($request) {
+			MyLogger::log("Got request using URI {$request->uri}", $this->cfg('logPath'));
+		};
+		// Add a listener. Note we bind $this.
+		$this->mb->events->on("mb:route:before", $this->logEventOnRoute, $this);
+	}
+
+	public function stop () {
+		// remove the event we listened to with start()
+		$this->mb->events->off("mb:route:before", $this->logEventOnRoute);
+	}
+}
+```
+
+Use the plugin in your app.
+
+```php
+
+$mb->initPlugins(array(
+	'MyBusiness\Minibase\Plugin\RouteLogger' => array(
+		'logPath' => __DIR__ . '/logs'
+	);
+));
+
+```
