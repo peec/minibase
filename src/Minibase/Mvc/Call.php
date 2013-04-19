@@ -8,7 +8,8 @@ use Minibase\Wreqr\EventBinder;
 use Minibase\InvalidControllerReturnException;
 use Minibase\Http\Response;
 use Minibase\Http\InvalidJsonRequestException;
-
+use Doctrine\Common\Annotations\AnnotationReader;
+	
 class Call {
 	private $call;
 	private $mb;
@@ -104,23 +105,23 @@ class Call {
 			if (!($contrInstance instanceof Controller)) {
 				throw new \Exception("$controller must extend Minibase\\Mvc\\Controller.");
 			}
-			$contrInstance->setMB($this->mb);
-			$call = array($contrInstance, $method);
-		} else { // Expect closure.
 			
-			$call = \Closure::bind($call, $this->mb);
+			
+			
+			$annotationReader = new AnnotationReader();
+			$annotations = $annotationReader->getMethodAnnotations(new \ReflectionMethod($contrInstance, $method));
+			
+			
+		} else { // Expect closure.
+			$contrInstance = new ClosureController($call);
+			$method = ClosureController::CALLBACK_NAME;
 		}
+		$contrInstance->setMB($this->mb);
+		$call = array($contrInstance, $method);
 		
-		try {
-			$resp = call_user_func_array($call, array($this->mb->request->params, $this->mb));
 		
-		} catch (InvalidJsonRequestException $e) {
-			if (!$this->mb->events->hasOn("mb:error:400")){
-				throw $e;
-			} else {
-				$resp = $this->mb->events->trigger("mb:error:400", array($e))[0];
-			}
-		}
+		$resp = call_user_func_array($call, array($this->mb->request->params, $this->mb));
+		
 		
 		
 		if (!($resp instanceof Response)){

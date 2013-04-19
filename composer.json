@@ -16,6 +16,7 @@
         "psr-0": {"Minibase": "src/"}
     },
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "doctrine/annotations": "1.1.*"
     }
 }

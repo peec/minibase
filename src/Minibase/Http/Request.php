@@ -7,6 +7,10 @@ namespace Minibase\Http;
  * @author peec
  *
  */
+use Minibase\MB;
+
+use Minibase\Wreqr\EventBinder;
+
 class Request {
 	/**
 	 * 
@@ -45,6 +49,13 @@ class Request {
 	
 
 	public $isRewriteEnabled = false;
+	
+	
+	/**
+	 * 
+	 * @var Minibase\MB
+	 */
+	private $mb;
 	
 	/**
 	 * Returns a Request object from the global $_SERVER vars.
@@ -105,10 +116,20 @@ class Request {
 	 */
 	public function json () {
 		$json = json_decode($this->raw());
-		if (!$json){
-			throw new InvalidJsonRequestException("Invalid JSON request.");
-		}	
+		if ($json === null){
+			$this->mb->executeCall($this->mb->events->trigger("mb:exception:InvalidJsonRequestException", array($this), function () {
+				return function () {
+					throw new InvalidJsonRequestException("Invalid JSON request. Catch mb:error:InvalidJsonRequestException event to customize this error event.");
+				};
+			})[0]);
+			die();
+		}
 		return $json;
+	}
+	
+	
+	public function setMB (MB $mb) {
+		$this->mb = $mb;
 	}
 	
 }

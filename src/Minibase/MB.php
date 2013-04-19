@@ -1,16 +1,13 @@
 <?php
 namespace Minibase;
 
+use Minibase\Cache\ICache;
+
 use Minibase\Mvc\Call;
-
 use Minibase\Mvc\RouteParser\RouteParser;
-
 use Minibase\Plugin\Plugin;
-
 use Minibase\Http\Response;
-
 use Minibase\Http\Request;
-
 use Minibase\Wreqr\EventBinder;
 use Minibase\Http;
 
@@ -47,7 +44,7 @@ class MB{
 	 * Configuration set by setConfig
 	 * @var array Array of configuration.
 	 */
-	private $cfg = array();
+	public $cfg = array();
 	
 	/**
 	 * The current call being executed. Call has useful method such as reverse routing.
@@ -79,6 +76,7 @@ class MB{
 		$mb = new MB();
 		$mb->events = new EventBinder();
 		$mb->request = Http\Request::createFromGlobals();
+		$mb->request->setMB($mb);
 		return $mb;
 	}
 	
@@ -206,51 +204,6 @@ class MB{
 		return $this->plugins[$name][0];
 	}
 	
-	/**
-	 * Returns a Minibase\Http\Response object based on the type you want to return.
-	 * @param string $type The type of response you want, avaialble is: html, redirect and json.
-	 * @throws \Exception If the type does not match any of the available types.
-	 * @return Minibase\Http\Response
-	 */
-	public function respond($type = 'html'){
-		
-		$map = array(
-			'json' => function () {
-				return new Http\JsonResponse();
-			},
-			'redirect' => function () {
-				return new Http\RedirectResponse();
-			},
-			'html' => function () {
-				$viewPath = isset($this->cfg[self::CFG_VIEWPATH]) ? $this->cfg[self::CFG_VIEWPATH] : null;
-				return new Http\HtmlResponse($viewPath, $this);
-			}
-		);
-		
-		// Trigger event so it's possible to add more response types.
-		$this->events->trigger('mb:respond:before', array(&$map));
-		
-		
-		if (!isset($map[$type])){
-			throw new \Exception("No such response ($type).");
-		}
-		// Bind $this to closure.
-		$resp = $map[$type]->bindTo($this);
-		
-		// Get additional args.
-		$args = array_slice(func_get_args(), 1);
-		
-		// Call it.
-		$response = call_user_func_array($resp, $args);
-		if (!($response instanceof Http\Response)) {
-			throw new \Exception("Response of $type must return instance of Minibase\Http\Response.");
-		}
-		// DI events.
-		$response->setEvents($this->events);
-		$response->setRequest($this->request);
-		
-		return $response;
-	}
 	
 	public function setConfig($key, $value) {
 		$this->cfg[$key] = $value;
@@ -313,5 +266,15 @@ class MB{
 	public function loadRouteFile ($filePath) {
 		$routeParser = RouteParser::fromFile($filePath, $this);
 		$routeParser->parse();
+	}
+	
+	public function setCacheDriver (ICache $cacher, $config = array()) {
+		$this->plugin("cache", function () use ($cacher, $config) {
+			$cache = new $cacher();
+			$cache->setup($config);
+			
+			return $cache;
+		});
+		
 	}
 }
