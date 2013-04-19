@@ -29,7 +29,7 @@ You can install Minibase with Composer.
 
 
 * [**Minibase**](docs/minibase.md): Configure the Minibase object.
-* [**Routing**](docs/routing.md): See how to do routing. 
+* [**Routing**](docs/routing.md): See how to do routing, reverse routing and such.
 * [**Events**](docs/events.md): Minibase events, listen to these to extend minibase.
 * [**3rdparty plugins**](docs/3rdparty-plugins.md): Browse plugins to extend minibase.
 
@@ -48,7 +48,8 @@ You can install Minibase with Composer.
 
 ### Routing.
 
-There are no built in router configuration, it's neatly wrapped with a method that takes 3 arguments. HTTP method, uri and callback. 
+
+There are no built in router configuration, it's neatly wrapped with a method that takes 3 arguments. HTTP method, uri and callback. Note, there are also OOP way of routing using `Controller.method` approach. See more about [**Routing**](docs/routing.md).
 
 
 *Creating your app in ~11 lines of code*
