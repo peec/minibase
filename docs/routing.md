@@ -38,10 +38,12 @@ $app->route("get", "/", function ($params, $that) {
 
 You can create route files that contains a JSON formatted file that contains your routes. A sample implementation of a `routes.json` file:
 
+Note that when using regex,  `\` must be escaped with `\\`.
 
 ```json
 [
-	["get", "/test", "MyController.test"]
+	["get", "/test", "MyController.test"],
+	["get"], "/news/(\\d+)", "NewsController.getNews"]
 ]
 ```
 
