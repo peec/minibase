@@ -7,7 +7,7 @@
 	- [Regular expressions in routes](#regular-expressions-in-routes)
 	- [Delivering a JSON Response.](#delivering-a-json-response)
 	- [Accepting json as raw format to callbacks.](#accepting-json-as-raw-format-to-callbacks)
-	- [Custom 404 page.](#custom-404-page)
+		- [Custom 400 page.](#custom-400-page)
 	- [Callback parameters](#callback-parameters)
 	- [Returning a Minibase\Http\Response](#returning-a-minibase\http\response)
 	- [Using .htaccess to remove "index.php"](#using-htaccess-to-remove-indexphp)
