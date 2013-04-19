@@ -119,16 +119,6 @@ $mb->route("get", "/", function () {
 ```
 
 
-### Custom 400 page.
-
-Creating a global 400 error, so you don't have to catch forexample `InvalidJsonRequestException` is easy. A sample implementation of this might be the following:
-
-```php
-$mb->events->on("mb:error:400", function ($exception) {
-	return $this->respond("json")
-		->data(array("message" => "Sorry, bad request. Must be JSON formated."));
-}, $mb); // Last argument binds $this to $mb inside the closure.
-```
 
 ## Callback parameters
 
