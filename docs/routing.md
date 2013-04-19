@@ -43,7 +43,7 @@ Note that when using regex,  `\` must be escaped with `\\`.
 ```json
 [
 	["get", "/test", "MyController.test"],
-	["get"], "/news/(\\d+)", "NewsController.getNews"]
+	["get", "/news/(\\d+)", "NewsController.getNews"]
 ]
 ```
 
