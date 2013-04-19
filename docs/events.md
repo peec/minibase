@@ -63,6 +63,26 @@ $mb->route("get", "/rssfeed", function () {
 ```
 
 
+### Request
+
+#### mb:exception:InvalidJsonRequestException (Minibase\Http\Request $request)
+
+Called once json was invalid when `$this->request->json()` was used. If not overridden Exception is thrown.
+
+Sample of implementation:
+
+
+```php
+$mb->events->on("mb:exception:InvalidJsonRequestException", function ($request) {
+
+	return function () use ($request) {
+		return $this->respond("json")
+		->data(array('error' => true, 'msg' => "Raw in data must be valid JSON."))
+		->with(400);
+	};
+});
+```
+
 
 ### Routing
 
