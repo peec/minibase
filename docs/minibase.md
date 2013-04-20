@@ -22,3 +22,19 @@ $mb->setConfig(MB::CFG_VIEWPATH, __DIR__ . '/views/');
 When using the `$this->respond("html")->view("views/home.html.php")` helper, it's no longer needed to define `views` in front of the path. The same goes for using the `$this->import("some_view.php"` helper in the View files.
 
 
+## Htaccess
+
+### Development vs Production
+
+When you develop your apps you can tell Minibase that you are currently in development with the `SetEnv` command in a `.htaccess` file. By default APPLICATION_ENV is set to 'production' and `$this->isProduction()`.
+
+
+```htaccess
+SetEnv APPLICATION_ENV development
+```
+
+`$mb->isDevelopment()` will now return true.
+
+
+
+
