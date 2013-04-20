@@ -1,7 +1,6 @@
 <?php
-/**
- * All the routes and controller callbacks are defined here.
- */
+// Should not be in public dir.
+// This is the console. Try running "php cli.php".
 
 // Require the app so we get the $app instance.
 require __DIR__ . '/configure.php';

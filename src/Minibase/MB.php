@@ -105,7 +105,7 @@ class MB{
 		$mb->events = new EventBinder();
 		$mb->request = new Http\Request();
 		
-		$this->console = new MBConsole($mb);
+		$mb->console = new MBConsole($mb);
 		return $mb;
 	}
 	
