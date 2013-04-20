@@ -114,7 +114,7 @@ class View{
 	 * @param int $expire Expire in seconds, 0 = forever.
 	 * @return string The content from cache or just from output. Next time served from cache.
 	 */
-	public function cache($key, callable $block, $expire = 0) {
+	public function cache($key, callable $block, $expire = 0, $noBind = false) {
 		// Eventuallty filled out.
 		$content = "";
 		
@@ -122,7 +122,9 @@ class View{
 		if ($cachedContent !== null) {
 			$content = $cachedContent;
 		} else {
-			$block = $block->bindTo($this);
+			if (!$noBind) {
+				$block = $block->bindTo($this);
+			}
 			ob_start();
 			$block();
 			$content = ob_get_clean();
