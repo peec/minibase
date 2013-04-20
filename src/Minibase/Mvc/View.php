@@ -92,7 +92,7 @@ class View{
 	}
 
 	public function asset ($resource) {
-		echo $this->request->basePath . $resource;
+		return $this->request->basePath . $resource;
 	}
 	
 	public function call ($call) {
