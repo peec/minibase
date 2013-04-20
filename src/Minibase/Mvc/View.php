@@ -115,12 +115,10 @@ class View{
 	 * @return string The content from cache or just from output. Next time served from cache.
 	 */
 	public function cache($key, callable $block, $expire = 0) {
-		ob_start();
 		// Eventuallty filled out.
 		$content = "";
 		
 		$cachedContent = $this->mb->cache->get($key);
-		
 		if ($cachedContent !== null) {
 			$content = $cachedContent;
 		} else {
