@@ -66,6 +66,12 @@ class MB{
 	
 	/**
 	 * 
+	 * @var string Application environment.
+	 */
+	public $applicationEnv;
+	
+	/**
+	 * 
 	 * @var string Config key for view path.
 	 */
 	const CFG_VIEWPATH = "viewPath";
@@ -75,7 +81,7 @@ class MB{
 	/**
 	 * Factory a new application
 	 * Uses global variables to create nested objects.
-	 * @return Minibase\MB
+	 * @return \Minibase\MB Returns a new object of Minibase.
 	 */
 	static public function create () {
 		$mb = new MB();
@@ -89,6 +95,8 @@ class MB{
 		AnnotationRegistry::registerFile(__DIR__ . '/Annotation/Annotations.php');
 		$this->annotationReader = new AnnotationReader();
 		
+		// Find out if in development or not
+		$this->applicationEnv = (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production');
 	}
 	
 	/**
@@ -98,7 +106,6 @@ class MB{
 	 * @param string $url The url starting with backslash, ie. "/" or "/hello/(\d+)". Can have regexp.
 	 * @param string $call A callback (closure) to run if the url and http method matches.
 	 * @param string $reverseKey A reverse route key that is unique to this route. 
-	 * @return Minibase\MB
 	 * @throws InvalidControllerReturnException
 	 */
 	public function route ($method, $url, $call, $reverseKey = null) {
@@ -282,6 +289,11 @@ class MB{
 		$routeParser->parse();
 	}
 	
+	/**
+	 * Sets the cache Driver.
+	 * @param ICache $cacher Instance of a ICache driver.
+	 * @param array $config Array of configuration delivered to the cache driver
+	 */
 	public function setCacheDriver (ICache $cacher, $config = array()) {
 		$this->plugin("cache", function () use ($cacher, $config) {
 			$cache = new $cacher();
@@ -291,4 +303,13 @@ class MB{
 		});
 		
 	}
+	
+	public function isProduction () {
+		return $this->applicationEnv === 'production';
+	}
+	
+	public function isDevelopment () {
+		return $this->applicationEnv === 'development';
+	}
+	
 }
