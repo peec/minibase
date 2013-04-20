@@ -71,6 +71,15 @@ class MB{
 	public $applicationEnv;
 	
 	/**
+	 * If created with MB::cli this var will be instance of Minibase\MBConsole.
+	 * @var Minibase\MBConsole 
+	 */
+	public $console;
+	
+	
+	const VERSION = "1.0.0a";
+	
+	/**
 	 * 
 	 * @var string Config key for view path.
 	 */
@@ -90,6 +99,16 @@ class MB{
 		$mb->request->setMB($mb);
 		return $mb;
 	}
+	
+	static public function cli () {
+		$mb = new MB();
+		$mb->events = new EventBinder();
+		$mb->request = new Http\Request();
+		
+		$this->console = new MBConsole($mb);
+		return $mb;
+	}
+	
 	
 	public function __construct() {
 		AnnotationRegistry::registerFile(__DIR__ . '/Annotation/Annotations.php');
@@ -235,32 +254,35 @@ class MB{
 	 * Starts the Minibase Application (starts handeling routes)
 	 */
 	public function start () {
-		$this->events->trigger("mb:start", [$this]);
-		foreach($this->routes as $route){
-			list($method, $uri, $call) = $route;
-			if ($this->executeRoute($method, $uri, $call)) {
-				
-				// Unbind flash scope
-				if (isset($_SESSION) && isset($_SESSION['flash_msg'])) {
-					unset($_SESSION['flash_msg']);
+		if (!$this->console) {
+			$this->events->trigger("mb:start", [$this]);
+			foreach($this->routes as $route){
+				list($method, $uri, $call) = $route;
+				if ($this->executeRoute($method, $uri, $call)) {
+			
+					// Unbind flash scope
+					if (isset($_SESSION) && isset($_SESSION['flash_msg'])) {
+						unset($_SESSION['flash_msg']);
+					}
+			
+					return;
 				}
-				
-				return;
 			}
+			
+			
+			// 404 - No route found.
+			$this->executeCall($this->events->trigger(
+					'mb:exception:RouteNotFoundException',
+					array($this->request),
+					function () {
+				return function () {
+					throw new RouteNotFoundException("Could not find route for {$this->request->method} {$this->request->uri}. Catch event mb:exception:RouteNotFoundException to handle this error.");
+				};
+			}
+			)[0]);
+		} else {
+			$this->console->run();
 		}
-		
-		
-		// 404 - No route found.
-		$this->executeCall($this->events->trigger(
-				'mb:exception:RouteNotFoundException',
-				array($this->request),
-				function () {
-					return function () {
-						throw new RouteNotFoundException("Could not find route for {$this->request->method} {$this->request->uri}. Catch event mb:exception:RouteNotFoundException to handle this error.");
-					};
-				}
-				)[0]);
-		
 	}
 	
 	/**
