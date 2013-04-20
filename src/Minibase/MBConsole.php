@@ -10,7 +10,7 @@ class MBConsole{
 	public function __construct (MB $mb) {
 		$this->mb = $mb;
 		$this->console = new Application('Minibase', MB::VERSION);
-		
+		$this->console->setCatchExceptions(true);
 	}
 	
 	
