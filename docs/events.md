@@ -156,4 +156,25 @@ function() {
 ```
 
 
+## Console
+
+
+#### mb:console (Symfony\Component\Console\Application $application)
+
+Useful when you want custom commands for your app. Plugins can easily listen to this event and create custom commands. Forexample, the `minibase-plugin-doctrine` plugin uses this event to add Doctrine related commands. 
+
+Example:
+
+```php
+$mb->events->on("mb:console", function (Application $console) {
+	$console->addCommands(array(
+		// DBAL Commands
+		new \Doctrine\DBAL\Tools\Console\Command\RunSqlCommand(),
+		new \Doctrine\DBAL\Tools\Console\Command\ImportCommand()
+		// etc ....
+	));		
+});
+```
+
+
 
