@@ -9,6 +9,7 @@ namespace Minibase\Wreqr;
  */
 class EventBinder {
 	private $bindings = array();
+	private $eventCollections = array();
 
 	/**
 	 * Run a callback once event $event is triggered.
@@ -42,6 +43,7 @@ class EventBinder {
 		if (isset($this->bindings[$event])) {
 			foreach ($this->bindings[$event] as $k => $v) {
 				list($eCall, $eThat) = $v;
+				
 				if ($eThat !== null) {
 					$eCall = \Closure::bind($eCall, $eThat);
 				}
@@ -68,6 +70,30 @@ class EventBinder {
 				unset($this->bindings[$event][$k]);
 			}
 		}
+	}
+	
+	/**
+	 * Adds a new EventCollection
+	 * @param EventCollection $collection Instance of a event collection.
+	 * @throws \Exception
+	 */
+	public function addEventCollection(EventCollection $collection) {
+		$name = get_class($collection);
+		if (isset($this->eventCollections[$name])) {
+			throw new \Exception ("EventCollection $name is already added. Must not add same collection twice.");
+		}
+		// Bind all events.
+		$collection->bindAll();
+		$this->eventCollections[$name] = $collection;
+		return $collection;
+	}
+	
+	/**
+	 * @param string $className The class name.
+	 * @return \Minibase\Wreqr\EventCollection
+	 */
+	public function getEventCollection ($className) {
+		return $this->eventCollections[$className];
 	}
 	
 

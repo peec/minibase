@@ -1,6 +1,8 @@
 <?php
 namespace Minibase;
 
+use Minibase\Wreqr\EventCollection;
+
 use Minibase\Cache\ICache;
 
 use Minibase\Mvc\Call;
@@ -324,6 +326,15 @@ class MB{
 			return $cache;
 		});
 		
+	}
+	/**
+	 * Adds a new EventCollection
+	 * @param \Minibase\Wreqr\EventCollection $collection Instance of a event collection.
+	 * @throws \Exception
+	 */
+	public function addEventCollection (EventCollection $collection) {
+		$collection->setMB($this);
+		$this->events->addEventCollection($collection);
 	}
 	
 	public function isProduction () {

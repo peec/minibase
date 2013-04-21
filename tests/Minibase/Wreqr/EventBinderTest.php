@@ -9,7 +9,8 @@ class EventBinderTest extends \PHPUnit_Framework_TestCase{
 
 		$mock = $this->getMock('stdClass', array('myCallback'));
 		$mock->expects($this->once())
-			->method('myCallback');		
+			->method('myCallback');
+		
 		$e->on("test", array($mock, 'myCallback'));
 			
 		$e->trigger("test");
@@ -20,7 +21,9 @@ class EventBinderTest extends \PHPUnit_Framework_TestCase{
 
 		$mock = $this->getMock('stdClass', array('myCallback'));
 		$mock->expects($this->never())
-		->method('myCallback');
+		->method('myCallback')
+		->will($this->returnValue(function () {
+		}));
 		
 		$e->on("test", array($mock, 'myCallback'));
 		$e->off("test", array($mock, 'myCallback'));
@@ -34,7 +37,9 @@ class EventBinderTest extends \PHPUnit_Framework_TestCase{
 		
 		$mock = $this->getMock('stdClass', array('myCallback'));
 		$mock->expects($this->once())
-		->method('myCallback');
+		->method('myCallback')
+		->will($this->returnValue(function () {}));
+		
 		
 		$mock2 = $this->getMock('stdClass', array('myCallback'));
 		$mock2->expects($this->never())
