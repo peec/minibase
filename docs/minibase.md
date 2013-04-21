@@ -45,5 +45,54 @@ SetEnv APPLICATION_ENV development
 `$mb->isDevelopment()` will now return true.
 
 
+## Configuration file
+
+Minibase has plenty of configuration, it can be messy sometimes to couple everything with code. The best way  to go might be to use the `$mb->loadConfigFile('app.json',__DIR__)` method. It takes two arguments. The first being the json file to load, second the Application Path to where your app base is.
+
+This is a sample configuration file.
+
+
+```json
+{
+	"routeFiles": ["routes.json"],
+	"config": {
+		"viewPath": "views/"
+	},
+	"cacheDriver": {
+		"name": "Minibase/Cache/Memcached/MemcachedDriver",
+		"config": {
+			"servers": [
+				["localhost", 11211]
+			]
+		}
+	},
+	"eventCollections": [
+		"SomeCollection"
+	],
+	"plugins": [
+		{
+			"name": "Pkj/Minibase/Plugin/TwigPlugin/TwigPlugin",
+			"config": {
+				
+			}
+		},
+		{
+			"name":"Pkj/Minibase/Plugin/Csrf/CsrfPlugin"
+		},
+		{
+			"name": "Pkj/Minibase/Plugin/DoctrinePlugin/DoctrinePlugin",
+			"config": {
+				"metadata": "annotation",
+				"entityDirs": ["Models/"],
+				"connection": {
+					"driver": "pdo_sqlite",
+					"path": "db.sqlite"
+				}
+			}
+		}
+	]
+}
+```
+
 
 
