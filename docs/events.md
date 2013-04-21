@@ -20,12 +20,32 @@ Remember that Minibase has Event driven architecture. This makes  is really easy
 
 You can easily listen on events by using the instance of the event aggregator in you `$mb` object.
 
+Procedural way binding:
+
 ```php
 $mb->events->on("event name", function (some arguments that gets passed...) {
   // Run something when this event is fired.
 });
 ```
 
+OOP way binding:
+
+```php
+
+class MyEvents extends EventCollection {
+	
+	/**
+	 * @Minibase\Annotation\Event("mb:start")
+	 */
+	public function lolSac () {
+		
+	}
+}
+
+// load the class
+$mb->addEventCollection(new MyEvents());
+
+```
 
 
 ## Built in events
