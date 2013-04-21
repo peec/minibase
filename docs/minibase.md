@@ -49,12 +49,18 @@ SetEnv APPLICATION_ENV development
 
 Minibase has plenty of configuration, it can be messy sometimes to couple everything with code. The best way  to go might be to use the `$mb->loadConfigFile('app.json',__DIR__)` method. It takes two arguments. The first being the json file to load, second the Application Path to where your app base is.
 
-This is a sample configuration file.
+This is a sample configuration file, it includes all possible configuration tags. 
 
 
 ```json
 {
 	"routeFiles": ["routes.json"],
+	"autoLoaders": [
+		{
+			"ns": "",
+			"path": ""
+		}
+	],
 	"config": {
 		"viewPath": "views/"
 	},
