@@ -314,6 +314,16 @@ class MB{
 	}
 	
 	/**
+	 * Loads a configuration JSON file into MB.
+	 * The config file can load plugins, event collections, route files, set base view path and MORE.
+	 * @param string $appJsonConfigFile The json file to load.
+	 * @param string $appDir The app root dir. For paths in JSON to have a relative path. If null, no base path is set and full paths must be set in the JSON file.
+	 */
+	public function loadConfigFile ($appJsonConfigFile, $appDir) {
+		MBConfigurationParser::fromFile($appJsonConfigFile, $this, $appDir)->parse();
+	}
+	
+	/**
 	 * Sets the cache Driver.
 	 * @param ICache $cacher Instance of a ICache driver.
 	 * @param array $config Array of configuration delivered to the cache driver
