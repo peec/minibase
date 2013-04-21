@@ -7,6 +7,15 @@
 # Minibase
 
 
+## Autoloading
+
+You might want to register the composer autoloader on your app so you don't need to include files everywhere. It's really simple, just use composer for this.
+
+```php
+$loader = require __DIR__ . "/vendor/autoload.php";
+$loader->add('', __DIR__ );
+```
+
 
 ## Configuration
 
