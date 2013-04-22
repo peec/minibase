@@ -5,6 +5,10 @@
 
 Minibase is a framework for RESTful PHP applications, based on [Event Driven Architecture](http://en.wikipedia.org/wiki/Event-driven_architecture). Minibase is what a framework should do, it gives you a minimum base to extend on as you go. Plugins can be downloaded from anywhere and included easily.
 
+Minibase is **not fullstack**, but with **plugins** it is.
+
+
+For a sample application see the [sample](sample/) directory in this repo. The sample app contains some architecture using best practices and includes some plugins to show the capabilities of Minibase.
 
 
 
