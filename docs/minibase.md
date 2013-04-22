@@ -49,20 +49,22 @@ SetEnv APPLICATION_ENV development
 
 Minibase has plenty of configuration, it can be messy sometimes to couple everything with code. The best way  to go might be to use the `$mb->loadConfigFile('app.json',__DIR__)` method. It takes two arguments. The first being the json file to load, second the Application Path to where your app base is.
 
-This is a sample configuration file, it includes all possible configuration tags. 
+This is a sample configuration file from the `sample` application. 
 
 
 ```json
 {
-	"routeFiles": ["routes.json"],
+	"routeFiles": ["${APP_DIR}/routes.json"],
+	
+	"vendorDir": "${APP_DIR}/../vendor",
 	"autoLoaders": [
 		{
-			"ns": "",
-			"path": ""
+			"ns": "app",
+			"path": "${APP_DIR}/.."
 		}
 	],
 	"config": {
-		"viewPath": "views/"
+		"viewPath": "${APP_DIR}/views/"
 	},
 	"cacheDriver": {
 		"name": "Minibase/Cache/Memcached/MemcachedDriver",
@@ -73,7 +75,7 @@ This is a sample configuration file, it includes all possible configuration tags
 		}
 	},
 	"eventCollections": [
-		"SomeCollection"
+		"app/events/AppEvents"
 	],
 	"plugins": [
 		{
@@ -89,16 +91,51 @@ This is a sample configuration file, it includes all possible configuration tags
 			"name": "Pkj/Minibase/Plugin/DoctrinePlugin/DoctrinePlugin",
 			"config": {
 				"metadata": "annotation",
-				"entityDirs": ["Models/"],
+				"entityDirs": ["${APP_DIR}/models/"],
 				"connection": {
 					"driver": "pdo_sqlite",
-					"path": "db.sqlite"
+					"path": "${APP_DIR}/cache/db.sqlite"
 				}
 			}
 		}
 	]
 }
 ```
+
+Note the configuration file is standard JSON, but some exceptions.
+
+**Variables**
+
+Variables is possible, you have access to variables with the `${VAR_NAME}` syntax.
+
+- **APP_DIR**: The path to where the app is located.
+
+
+**Namespaces**
+
+Namespaces are using the forwardslash `/` instead of backslash.
+
+
+#### routeFiles
+
+Array of routeFiles (String).
+
+
+
+#### vendorDir
+
+A string containg the path to where the composer vendor dir is located.
+
+#### autoLoaders
+
+Array of Autoloader Configurations (object).
+
+Requires `vendorDir` to be set. This directive allows you to add autoloaders for your own app. Using composer autoloader.
+
+
+
+
+
 
 
 
