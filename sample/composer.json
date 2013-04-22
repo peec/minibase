@@ -1,5 +1,8 @@
 {
 	"require":{
-	     "minibase/minibase":"dev-master"
+	     "minibase/minibase":"dev-master",
+	     "pkj/minibase-plugin-twig": "dev-master",
+         "pkj/minibase-plugin-doctrine": "dev-master",
+	     "pkj/minibase-plugin-csrfprotection": "dev-master"
 	}
 }

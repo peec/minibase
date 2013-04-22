@@ -1,0 +1,47 @@
+{
+	"routeFiles": ["${APP_DIR}/routes.json"],
+	
+	"vendorDir": "${APP_DIR}/../vendor",
+	"autoLoaders": [
+		{
+			"ns": "app",
+			"path": "${APP_DIR}/.."
+		}
+	],
+	"config": {
+		"viewPath": "${APP_DIR}/views/"
+	},
+	"cacheDriver": {
+		"name": "Minibase/Cache/Memcached/MemcachedDriver",
+		"config": {
+			"servers": [
+				["localhost", 11211]
+			]
+		}
+	},
+	"eventCollections": [
+		"app/events/AppEvents"
+	],
+	"plugins": [
+		{
+			"name": "Pkj/Minibase/Plugin/TwigPlugin/TwigPlugin",
+			"config": {
+				"cache": "${APP_DIR}/cache/templates"
+			}
+		},
+		{
+			"name":"Pkj/Minibase/Plugin/Csrf/CsrfPlugin"
+		},
+		{
+			"name": "Pkj/Minibase/Plugin/DoctrinePlugin/DoctrinePlugin",
+			"config": {
+				"metadata": "annotation",
+				"entityDirs": ["${APP_DIR}/Models/"],
+				"connection": {
+					"driver": "pdo_sqlite",
+					"path": "db.sqlite"
+				}
+			}
+		}
+	]
+}

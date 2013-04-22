@@ -321,6 +321,7 @@ class MB{
 	 */
 	public function loadConfigFile ($appJsonConfigFile, $appDir) {
 		MBConfigurationParser::fromFile($appJsonConfigFile, $this, $appDir)->parse();
+		return $this;
 	}
 	
 	/**

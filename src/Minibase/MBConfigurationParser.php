@@ -40,13 +40,19 @@ class MBConfigurationParser {
 	
 	
 	public function __construct ($json, MB $mb, $appDir = null) {
+		$this->appDir = $appDir;
+		$this->mb = $mb;
+		
+		$json = $this->replaceStringVars($json, array(
+				'APP_DIR' => $this->appDir
+		));
+		
 		$jsonData = json_decode($json);
 		if ($jsonData === null) {
 			throw new \Exception("Configuration to MBConfigurationParsaer must be valid JSON.");
 		}
 		$this->data = $jsonData;
-		$this->mb = $mb;
-		$this->appDir = $appDir;
+		
 	}
 	
 	/**
@@ -56,9 +62,25 @@ class MBConfigurationParser {
 		$mb = $this->mb;
 		$appDir = $this->appDir;
 		
+		$rootNode = $this->data;
+		
+		
+		$this->assign("autoLoaders", $this->data, function ($value) use ($mb, $rootNode) {
+			$vendorDir = $this->assign("vendorDir", $rootNode, null, true, self::T_STRING);
+			
+			foreach($value as $aLoader){
+				$ns = $this->replaceNS($this->assign("ns", $aLoader, null, true, self::T_STRING));
+				$path = $this->assign("path", $aLoader, null, true, self::T_STRING);
+		
+				$loader = require("{$vendorDir}/autoload.php");
+				$loader->add($ns, $path);
+		
+			}
+		}, false, self::T_ARRAY);
+		
 		$this->assign("routeFiles", $this->data, function ($value) use ($mb) {
 			foreach($value as $file){
-				$mb->loadRouteFile($this->fileDir($file));
+				$mb->loadRouteFile($file);
 			}
 		}, false, self::T_ARRAY);
 		
@@ -69,19 +91,6 @@ class MBConfigurationParser {
 			}
 		}, false, self::T_ARRAY);
 		
-		$this->assign("autoLoaders", $this->data, function ($value) use ($mb, $appDir) {
-			foreach($value as $aLoader){
-				if (!$appDir){
-					throw new \Exception("App directory must be defined in order to use autoLoaders configuration.");
-				}
-				$ns = $this->replaceNS($this->assign("ns", $aLoader, null, true, self::T_STRING));
-				$path = $this->assign("path", $aLoader, null, true, self::T_STRING);
-				
-				$loader = require $this->fileDir("vendor/autoload.php");
-				$loader->add($ns, $this->fileDir($path));
-				
-			}
-		}, false, self::T_ARRAY);
 		
 		$this->assign("config", $this->data, function ($value) use ($mb) {
 			foreach($value as $k => $v){
@@ -141,19 +150,19 @@ class MBConfigurationParser {
 	}
 	
 	
-	/**
-	 * Returns a file path to a file based on appDir if its defined.
-	 * @param string $file The file path.
-	 */
-	public function fileDir ($file) {
-		$path = "";
-		if ($this->appDir) {
-			$path .= $this->appDir;
-			if (substr($path,-1) !== DIRECTORY_SEPARATOR) {
-				$path .= DIRECTORY_SEPARATOR;
+	public function replaceStringVars ($str, $varMap = array()) {
+		
+		$str = preg_replace_callback('#\$\{([a-zA-Z_]*)\}#', function ($keys) use($varMap) {
+			$key = $keys[1];
+			if (!in_array($key, array_keys($varMap))) {
+				throw new \Exception ("Could not find variable \$\{$key\} in JSON configuration file.");
 			}
-		}
-		return $path . $file;
+			$val = $varMap[$key];
+			$val = str_replace('\\', '\\\\', $val); // Windows.
+			return $val;
+		}, $str);
+		
+		return $str;
 	}
 	
 	/**

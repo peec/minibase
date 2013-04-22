@@ -1,6 +1,6 @@
 <?php
+require __DIR__ .'/../vendor/autoload.php';
 
-// Require the router.
-require __DIR__ . '/../www.php';
+$mb = Minibase\MB::create()->loadConfigFile(__DIR__ . '/../app/app.json', __DIR__ . '/../app');
 
 $mb->start();
