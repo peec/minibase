@@ -8,7 +8,7 @@ Minibase is a framework for RESTful PHP applications, based on [Event Driven Arc
 Minibase is **not fullstack**, but with **plugins** it is.
 
 
-For a sample application see the [sample](sample/) directory in this repo. The sample app contains some architecture using best practices and includes some plugins to show the capabilities of Minibase.
+For a sample application see the [Sample Minibase App](https://github.com/peec/minibase-sample). The sample app contains some architecture using best practices and includes some plugins to show the capabilities of Minibase.
 
 
 
