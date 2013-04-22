@@ -7,5 +7,24 @@
 	<body>
 		<h1>Hello World</h1>
 		<p>This is a sample app using minibase.</p>
+		
+		<p>Run "php cli.php orm:schema-tool:create" to install database (sqlite is default).</p>
+		
+		<h2>News</h2>
+		<ul>
+		{% for n in news %}
+			<li>{{n.getTitle()}}</li>
+		{% endfor %}
+		</ul>
+		
+		<h2>Create new news</h2>
+		<form method="post" action="{{"app/controllers/Home.createNews"|route()}}">
+			{{csrfTokenInput|raw}}
+			
+			<input type="text" name="title">
+			
+			<input type="submit">
+		</form>
+		
 	</body>
 </html>

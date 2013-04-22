@@ -26,7 +26,7 @@
 		{
 			"name": "Pkj/Minibase/Plugin/TwigPlugin/TwigPlugin",
 			"config": {
-				"cache": "${APP_DIR}/cache/templates"
+				
 			}
 		},
 		{
@@ -36,10 +36,10 @@
 			"name": "Pkj/Minibase/Plugin/DoctrinePlugin/DoctrinePlugin",
 			"config": {
 				"metadata": "annotation",
-				"entityDirs": ["${APP_DIR}/Models/"],
+				"entityDirs": ["${APP_DIR}/models/"],
 				"connection": {
 					"driver": "pdo_sqlite",
-					"path": "db.sqlite"
+					"path": "${APP_DIR}/cache/db.sqlite"
 				}
 			}
 		}
