@@ -116,6 +116,17 @@ class Call {
 			
 			
 			foreach($annotations as $anot) {
+				$customAnotationReturn = $this->mb->events->trigger("mb:call:execute:annotation", array($anot), function () {
+					
+				})[0];
+				
+				// If the event returns a `Minibase\Http\Response` object, execution of the 
+				// current call is stopped and the specific Response is returned instead.
+				if ($customAnotationReturn && $customAnotationReturn instanceof Response) {
+					return $customAnotationReturn;
+				}
+				
+				
 				if ($anot instanceof CachedCall) {
 					if (!$anot->key) {
 						throw new \Exception ("$controller.$method: Annotation CachedCall must have a key parameter defined.");
