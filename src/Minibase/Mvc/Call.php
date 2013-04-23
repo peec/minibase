@@ -110,6 +110,7 @@ class Call {
 				throw new \Exception("$controller must extend Minibase\\Mvc\\Controller.");
 			}
 			
+			$contrInstance->setMB($this->mb);
 			
 			
 			$annotations = $this->mb->annotationReader->getMethodAnnotations(new \ReflectionMethod($contrInstance, $method));
@@ -153,7 +154,6 @@ class Call {
 			$contrInstance = new ClosureController($call);
 			$method = ClosureController::CALLBACK_NAME;
 		}
-		$contrInstance->setMB($this->mb);
 		$call = array($contrInstance, $method);
 		
 		
