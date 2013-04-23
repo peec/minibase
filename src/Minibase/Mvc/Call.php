@@ -113,7 +113,9 @@ class Call {
 			
 			
 			$annotations = $this->mb->annotationReader->getMethodAnnotations(new \ReflectionMethod($contrInstance, $method));
-			
+			// after add class annotations.
+			$annotations = array_merge($annotations, $this->mb->annotationReader->getClassAnnotations(new \ReflectionClass($contrInstance)));
+				
 			
 			foreach($annotations as $anot) {
 				$customAnotationReturns = $this->mb->events->trigger("mb:call:execute:annotation", array($anot), function () {
