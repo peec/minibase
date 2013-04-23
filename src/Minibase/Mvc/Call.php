@@ -118,7 +118,7 @@ class Call {
 				
 			
 			foreach($annotations as $anot) {
-				$customAnotationReturns = $this->mb->events->trigger("mb:call:execute:annotation", array($anot), function () {
+				$customAnotationReturns = $this->mb->events->trigger("mb:call:execute:annotation", array($anot, $controller), function () {
 					
 				});
 				foreach($customAnotationReturns as $customAnotationReturn) {
