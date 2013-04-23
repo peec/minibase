@@ -177,9 +177,9 @@ function() {
 
 ## Call execution.
 
-#### mb:call:execute:annotation (\stdClass $annotation)
+#### mb:call:execute:annotation (\stdClass $annotation, \Minibase\Mvc\Controller $controller)
 
-If you want to extend controllers with custom annotations this is the method to listen on. `$annotation` should be checked with `instanceof`. Annotations are executed before the specific call are executed so custom annotations can forexample. If the event returns a `Minibase\Http\Response` object, execution of the current call is stopped and the specific Response is returned instead.
+If you want to extend controllers with custom annotations this is the method to listen on. `$annotation` should be checked with `instanceof`. Annotations are executed before the specific call are executed so custom annotations can forexample. If the event returns a `Minibase\Http\Response` object, execution of the current call is stopped and the specific Response is returned instead. The controller is a instance of the specific controller that the annotation was on.
 
 
 
