@@ -126,6 +126,7 @@ class Call {
 					// If the event returns a `Minibase\Http\Response` object, execution of the
 					// current call is stopped and the specific Response is returned instead.
 					if ($customAnotationReturn && $customAnotationReturn instanceof Response) {
+						$customAnotationReturn->execute();
 						return $customAnotationReturn;
 					}
 				}
