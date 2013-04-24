@@ -1,36 +1,15 @@
 # The Cache
 
-Minibase includes a interface (`Minibase\Cache\ICache`) and a `setCacheDriver` method in the MB instance. Caching is available from `$mb->cache` after `setCacheDriver` is called.
+Minibase uses Doctrine's Cache interface. [Many](http://docs.doctrine-project.org/en/2.0.x/reference/caching.html) caching engines such as Apc, Memcache, Memcached etc.
 
 
-To enable caching use the `setCacheDriver` method on the `$mb` object.
-
-```
-$mb->setCacheDriver(new MyCachingDriver(), array(
-  // Configuration for the driver
-));
-```
-
-## ICache interface
-
-
-```php
-interface ICache {
-  const KEY_NOT_FOUND = null;
-	public function setup (array $config);
-	public function get($key);
-	public function delete ($key);
-	public function set($key, $value, $expireInSeconds = 0);
-	
-}
-```
+By default `ArrayCache` is used in development, custom cache driver is not set if in development. 
 
 
 
-## Included drivers
+## Included Array configurations
 
-We have included some drivers, drivers are very simple to create.
-
+We include a Array configuration interface for some cache engines so that it's easy to enable caching.
 
 ### Memcached Cache driver
 
@@ -41,9 +20,9 @@ Install memcache and the memcached php extension (sudo apt-get install php5-memc
 Sample implementation:
 
 ```php
-use Minibase\Cache\Memcached\MemcachedDriver;
+use Minibase/Cache/ConfigureMemcached;
 
-$mb->setCacheDriver(new MemcachedDriver(), array(
+$mb->configureCacheDriver(new ConfigureMemcached(), array(
   'servers' => array(
 		['localhost', 11211]
 	),
@@ -52,6 +31,9 @@ $mb->setCacheDriver(new MemcachedDriver(), array(
     // $this is now a \Memcached object, so you can configure it further in this callback if needed.
   }
 ));
+
+// This sets $this->cache to be a instance of Doctrine\Common\Cache\CacheProvider
+
 ```
 
 
