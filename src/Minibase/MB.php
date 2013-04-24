@@ -140,6 +140,8 @@ class MB{
 	 * @throws InvalidControllerReturnException
 	 */
 	public function route ($method, $url, $call, $reverseKey = null) {
+		$url .= substr($url, -1) != '/' ? '/' : '';
+		
 		$call = new Call($call, array($method, $url, $reverseKey));
 		$call->setMB($this);
 		if ($reverseKey !== null) {
@@ -172,6 +174,8 @@ class MB{
 			
 		if ($this->request->method === strtolower($method)) {
 			$uri = $this->request->uri;
+			$uri .= substr($uri, -1) != '/' ? '/' : '';
+			
 			if(preg_match("#^$url$#i", $uri, $matches)) {
 				
 				$this->request->params = array_slice($matches, 1);
