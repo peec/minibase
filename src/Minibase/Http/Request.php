@@ -58,6 +58,12 @@ class Request {
 	private $mb;
 	
 	/**
+	 * 
+	 * @var string Returns the protocol + hostname. eg. https://localhost or http://mydomain.com
+	 */
+	public $domain;
+	
+	/**
 	 * Returns a Request object from the global $_SERVER vars.
 	 * @return Minibase\Http\Request
 	 */
@@ -95,6 +101,8 @@ class Request {
 		// Set the script name
 		$req->scriptName = basename($_SERVER['SCRIPT_FILENAME']);
 		
+		$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
+		$req->domain = ($req->isSecure ? 'https://' : 'http://') . ($host ?: $_SERVER['SERVER_NAME']);
 		
 		return $req;
 	}
