@@ -1,10 +1,11 @@
 <?php
 namespace Minibase;
 
+use Doctrine\Common\Cache\CacheProvider;
+
+use Minibase\Cache\IArrayCacheConfigure;
+use Doctrine\Common\Cache\ArrayCache;
 use Minibase\Wreqr\EventCollection;
-
-use Minibase\Cache\ICache;
-
 use Minibase\Mvc\Call;
 use Minibase\Mvc\RouteParser\RouteParser;
 use Minibase\Plugin\Plugin;
@@ -77,7 +78,12 @@ class MB{
 	 * @var Minibase\MBConsole 
 	 */
 	public $console;
-	
+
+	/**
+	 * The current cache provider.
+	 * @var Doctrine\Common\Cache\CacheProvider
+	 */
+	public $cache;
 	
 	const VERSION = "1.0.0a";
 	
@@ -117,7 +123,11 @@ class MB{
 		$this->annotationReader = new AnnotationReader();
 		
 		// Find out if in development or not
-		$this->applicationEnv = (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production');
+		$this->applicationEnv = (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development');
+		
+		if ($this->isDevelopment()) {
+			$this->cache = new ArrayCache();
+		}
 	}
 	
 	/**
@@ -326,18 +336,27 @@ class MB{
 	
 	/**
 	 * Sets the cache Driver.
-	 * @param ICache $cacher Instance of a ICache driver.
+	 * Only works if in production, else ArrayCache is used.
+	 * @param IArrayCacheConfigure $cacher Instance of a ICache driver.
 	 * @param array $config Array of configuration delivered to the cache driver
 	 */
-	public function setCacheDriver (ICache $cacher, $config = array()) {
-		$this->plugin("cache", function () use ($cacher, $config) {
+	public function configureCacheDriver (IArrayCacheConfigure $cacher, $config = array()) {
+		if (!$this->isDevelopment()) {
 			$cache = new $cacher();
 			$cache->setup($config);
-			
-			return $cache;
-		});
-		
+			$this->cache = $cache->getDriver();
+		}
 	}
+	
+	/**
+	 * Sets the cache driver.
+	 * @param CacheProvider $cache
+	 */
+	public function setCache (CacheProvider $cache) {
+		$this->cache = $cache;
+	}
+	
+	
 	/**
 	 * Adds a new EventCollection
 	 * @param \Minibase\Wreqr\EventCollection $collection Instance of a event collection.

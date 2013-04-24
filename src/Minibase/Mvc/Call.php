@@ -142,8 +142,8 @@ class Call {
 			}
 			// Get cache.
 			if ($cacheSettings) {
-				$respCache = $this->mb->cache->get($cacheSettings->key);
-				if ($respCache) {
+				if ($this->mb->cache->contains($cacheSettings->key)) {
+					$respCache = $this->mb->cache->fetch($cacheSettings->key);
 					$respCache->execute();
 					return $respCache;
 				}
@@ -169,7 +169,7 @@ class Call {
 		// Save cache
 		if ($cacheSettings) {
 			$cachedResponse = new CachedResponse($resp->headers, $resp->body, $resp->statusCode);
-			$this->mb->cache->set($cacheSettings->key, $cachedResponse, $cacheSettings->expire);
+			$this->mb->cache->save($cacheSettings->key, $cachedResponse, $cacheSettings->expire);
 		}
 		
 		return $resp;

@@ -44,15 +44,6 @@ class MBTest extends \PHPUnit_Framework_TestCase{
 	
 	
 	
-	/**
-	 * @expectedException Minibase\RouteNotFoundException
-	 */
-	public function testRouteNotFound () {
-		$mb = $this->mockRoute("get", "/test/2");
-		
-		$mb->start();
-	}
-	
 
 	public function testPluginIsAccessibleAfterInit () {
 		$mb = $this->buildMB();

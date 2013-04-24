@@ -112,7 +112,7 @@ class MBConfigurationParser {
 		$this->assign("cacheDriver", $this->data, function ($value) use ($mb) {
 			$name = $this->replaceNS($this->assign("name", $value, null, true, self::T_STRING));
 			$config = $this->assign("config", $value, null, false, self::T_OBJECT, array());
-			$mb->setCacheDriver(new $name(), $this->objectToArray($config));
+			$mb->configureCacheDriver(new $name(), $this->objectToArray($config));
 			
 		}, false, self::T_OBJECT);
 		

@@ -118,8 +118,9 @@ class View{
 		// Eventuallty filled out.
 		$content = "";
 		
-		$cachedContent = $this->mb->cache->get($key);
-		if ($cachedContent !== null) {
+		if ($this->mb->cache->contains($key)) {
+			
+			$cachedContent = $this->mb->cache->fetch($key);
 			$content = $cachedContent;
 		} else {
 			if (!$noBind) {
@@ -128,7 +129,7 @@ class View{
 			ob_start();
 			$block();
 			$content = ob_get_clean();
-			$this->mb->cache->set($key, $content, $expire);
+			$this->mb->cache->save($key, $content, $expire);
 		}
 		return $content;
 	}
