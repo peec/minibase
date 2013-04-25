@@ -110,6 +110,11 @@ Variables is possible, you have access to variables with the `${VAR_NAME}` synta
 
 - **APP_DIR**: The path to where the app is located.
 
+Environment variables can also be referenced with the `$_ENV{VAR_NAME}` syntax. This is useful for private data such as passwords and configuration that follows the environment. 
+
+Note that you must set environment variables yourself (eg. in a virtual host configuration in apache), `$_ENV` uses the `getenv` function to get the variable. 
+
+
 
 **Namespaces**
 
