@@ -152,14 +152,30 @@ class MBConfigurationParser {
 	
 	public function replaceStringVars ($str, $varMap = array()) {
 		
-		$str = preg_replace_callback('#\$\{([a-zA-Z_]*)\}#', function ($keys) use($varMap) {
+		$patterns = array(
+				'#(\$)\{([a-zA-Z_]*)\}#', // simple ${Myvar_}
+				'#(\$_ENV)\{([a-zA-Z_]*)\}#', // simple $_ENV{Myvar_}
+				
+		);
+		
+		$str = preg_replace_callback($patterns, function ($keys) use($varMap) {
 			$key = $keys[1];
-			if (!in_array($key, array_keys($varMap))) {
-				throw new \Exception ("Could not find variable \$\{$key\} in JSON configuration file.");
+			$val = $keys[2];
+			if ($key === '$'){
+				if (!in_array($val, array_keys($varMap))) {
+					throw new \Exception ("Could not find variable $key\{$val\} in JSON configuration file.");
+				}
+			} else if ($key === '$_ENV') {
+				$value = getenv($val);
+				if ($value === false) {
+					throw new \Exception ("Could not find environment variable $val using $key{{$val}}. Not set for this environment.");
+				}
+				return $value;
 			}
-			$val = $varMap[$key];
-			$val = str_replace('\\', '\\\\', $val); // Windows.
-			return $val;
+			
+			$value = $varMap[$val];
+			$value = str_replace('\\', '\\\\', $value); // Windows.
+			return $value;
 		}, $str);
 		
 		return $str;
