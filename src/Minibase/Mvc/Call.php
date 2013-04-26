@@ -25,6 +25,9 @@ class Call {
 	
 	public $isReversable = false;
 	
+	public $realObject;
+	public $cacheSettings;
+	
 	public function __construct($call, $config = null) {
 		$this->call = $call;
 		if ($config) {
@@ -93,34 +96,30 @@ class Call {
 	}
 	
 	
-	
-	
-	public function execute () {
-		$call = $this->call;
-		// Set the current call.
-		$this->mb->call = $this;
-			
-		$cacheSettings = null;
+	/**
+	 * If annotations are on the controller / methods these are checked here.
+	 * Interception is possible, if this returns a response the response should
+	 * be sent instead of the original super call.
+	 * 
+	 * @throws \Exception
+	 */
+	public function getBeforeResponseIfAny () {
 		
+		list ($contrInstance, $method) = $this->getControllerMethod();
+		
+		$annotations = array();
 		// Controller / method handle.
-		if (is_array($call)) {
-			list ($controller, $method) = $call;
-			$contrInstance = new $controller();
-			if (!($contrInstance instanceof Controller)) {
-				throw new \Exception("$controller must extend Minibase\\Mvc\\Controller.");
-			}
-			
-			$contrInstance->setMB($this->mb);
-			
-			
+		if (is_array($this->call)) {
+				
+				
 			$annotations = $this->mb->annotationReader->getMethodAnnotations(new \ReflectionMethod($contrInstance, $method));
 			// after add class annotations.
 			$annotations = array_merge($annotations, $this->mb->annotationReader->getClassAnnotations(new \ReflectionClass($contrInstance)));
+		
 				
-			
 			foreach($annotations as $anot) {
 				$customAnotationReturns = $this->mb->events->trigger("mb:call:execute:annotation", array($anot, $contrInstance), function () {
-					
+						
 				});
 				foreach($customAnotationReturns as $customAnotationReturn) {
 					// If the event returns a `Minibase\Http\Response` object, execution of the
@@ -129,38 +128,82 @@ class Call {
 						$customAnotationReturn->execute();
 						return $customAnotationReturn;
 					}
-				}
-				
-				
-				
+				}	
+		
 				if ($anot instanceof CachedCall) {
 					if (!$anot->key) {
 						throw new \Exception ("$controller.$method: Annotation CachedCall must have a key parameter defined.");
 					} else {
-						$cacheSettings = $anot;
+						$this->cacheSettings = $anot;
 					}
 				}
 			}
 			// Get cache.
-			if ($cacheSettings) {
-				if ($this->mb->cache->contains($cacheSettings->key)) {
-					$respCache = $this->mb->cache->fetch($cacheSettings->key);
+			if ($this->cacheSettings) {
+				if ($this->mb->cache->contains($this->cacheSettings->key)) {
+					$respCache = $this->mb->cache->fetch($this->cacheSettings->key);
 					$respCache->execute();
 					return $respCache;
 				}
 			}
 			
 			
+			
+		}
+		
+		// Last resort to override ( After all annotations are set. )
+		$overrideCalls = $this->mb->events->trigger("mb:call:execute", array($this->mb->request, $annotations));
+		foreach($overrideCalls as $oCall) {
+			if ($oCall && ($oCall instanceof Response || is_callable($oCall))) {
+				$oCall = $this->mb->getCall($oCall);
+				$oCall->execute();
+				return $oCall;
+			}
+		}
+		
+	}
+	
+	public function getControllerMethod () {
+		if ($this->realObject) {
+			return $this->realObject;
+		}
+		
+		$call = $this->call;
+		if (is_array($call)) {
+			list ($controller, $method) = $call;
+			
+			$contrInstance = new $controller();
+			if (!($contrInstance instanceof Controller)) {
+				throw new \Exception("$controller must extend Minibase\\Mvc\\Controller.");
+			}
+				
+			$contrInstance->setMB($this->mb);
+				
+			
 		} else { // Expect closure.
 			$contrInstance = new ClosureController($call);
 			$method = ClosureController::CALLBACK_NAME;
 		}
+		
+		$this->realObject = array($contrInstance, $method);
+		
+		return $this->realObject;
+	}
+	
+	
+	/**
+	 * Executes this call and response.
+	 * Returns the response afterwards.
+	 * @throws InvalidControllerReturnException
+	 */
+	public function execute () {
+		$call = $this->call;
+		
+		list ($contrInstance, $method) = $this->getControllerMethod();
+		
 		$call = array($contrInstance, $method);
 		
-		
 		$resp = call_user_func_array($call, array($this->mb->request->params, $this->mb));
-		
-		
 		
 		if (!($resp instanceof Response)){
 			throw new InvalidControllerReturnException("Controllers must return instances of a Response.");
@@ -168,9 +211,9 @@ class Call {
 		$resp->execute();
 		
 		// Save cache
-		if ($cacheSettings) {
+		if ($this->cacheSettings) {
 			$cachedResponse = new CachedResponse($resp->headers, $resp->body, $resp->statusCode);
-			$this->mb->cache->save($cacheSettings->key, $cachedResponse, $cacheSettings->expire);
+			$this->mb->cache->save($this->cacheSettings->key, $cachedResponse, $this->cacheSettings->expire);
 		}
 		
 		return $resp;

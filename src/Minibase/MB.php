@@ -170,7 +170,7 @@ class MB{
 	 * @param string $url url starting with "/"
 	 * @param callback $call Callback.
 	 */
-	public function executeRoute ($method, $url, $call) {
+	public function executeRoute ($method, $url, Call $call) {
 			
 		if ($this->request->method === strtolower($method)) {
 			$uri = $this->request->uri;
@@ -182,8 +182,13 @@ class MB{
 				// Trigger event mb:route:before and send Request instance to it.
 				$this->events->trigger("mb:route:before", array($this->request));
 				
+				// Prepare , check if we intercepted the response.
+				if ($resp = $call->getBeforeResponseIfAny() ) {
+					return $resp;
+				} else { // Or execute the real call.
+					$resp = $call->execute();
+				}
 				
-				$resp = $call->execute();
 				
 				$this->events->trigger("mb:route:after", array($this->request, $resp));
 				
@@ -291,14 +296,24 @@ class MB{
 					'mb:exception:RouteNotFoundException',
 					array($this->request),
 					function () {
-				return function () {
-					throw new RouteNotFoundException("Could not find route for {$this->request->method} {$this->request->uri}. Catch event mb:exception:RouteNotFoundException to handle this error.");
-				};
+					return function () {
+						throw new RouteNotFoundException("Could not find route for {$this->request->method} {$this->request->uri}. Catch event mb:exception:RouteNotFoundException to handle this error.");
+					};
 			}
 			)[0]);
 		} else {
 			$this->console->run();
 		}
+	}
+	
+	
+	public function getCall ($call) {
+		if (is_object($call) && $call instanceof Call) {
+		} else if (is_callable($call)) {
+			$call = new Call($call);
+			$call->setMB($this);
+		}
+		return $call;
 	}
 	
 	/**
@@ -307,15 +322,8 @@ class MB{
 	 * @param mixed $call Array($object, method) or Closure
 	 */
 	public function executeCall ($call) {
-		if (is_object($call) && $call instanceof Call) {
-			$call->execute();
-		} else if (is_callable($call)) {
-			$call = new Call($call);
-			$call->setMB($this);
-			$call->execute();
-		} else {
-			throw new \Exception ("Call is not callable. Cannot execute call.");
-		}
+		$call = $this->getCall($call);
+		return $call->execute();
 	}
 	
 	/**
