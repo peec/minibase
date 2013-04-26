@@ -8,7 +8,7 @@ Minibase is a framework for RESTful PHP applications, based on [Event Driven Arc
 Minibase is **not fullstack**, but with **plugins** it is.
 
 
-For a sample application see the [Sample Minibase App](https://github.com/peec/minibase-sample). The sample app contains some architecture using best practices and includes some plugins to show the capabilities of Minibase.
+For a fullstack framework see the [Sample Minibase App](https://github.com/peec/minibase-sample). The sample app contains some architecture using best practices and includes some plugins to show the capabilities of Minibase.
 
 
 
@@ -58,7 +58,8 @@ You can install Minibase with [Composer](http://getcomposer.org/), if you are no
 
 ### Simple (if you want)
 
-There are no built in router configuration, it's neatly wrapped with a method that takes 3 arguments. HTTP method, uri and callback. Note, there are also OOP way of routing using `Controller.method` approach. See more about [**Routing**](docs/routing.md).
+If you really want no OO-code you can create your apps really fast.
+Note, there are also OO-way of routing using `Controller.method` approach. See more about [**Routing**](docs/routing.md).
 
 
 *Creating your app in ~11 lines of code*
