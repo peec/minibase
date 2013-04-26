@@ -171,20 +171,16 @@ class Call {
 		$call = $this->call;
 		if (is_array($call)) {
 			list ($controller, $method) = $call;
-			
 			$contrInstance = new $controller();
-			if (!($contrInstance instanceof Controller)) {
-				throw new \Exception("$controller must extend Minibase\\Mvc\\Controller.");
-			}
-				
-			$contrInstance->setMB($this->mb);
-				
-			
 		} else { // Expect closure.
 			$contrInstance = new ClosureController($call);
-			$method = ClosureController::CALLBACK_NAME;
+			$method = ClosureController::CALLBACK_NAME;	
 		}
-		
+		if (!($contrInstance instanceof Controller)) {
+			throw new \Exception("$controller must extend Minibase\\Mvc\\Controller.");
+		}
+		$contrInstance->setMB($this->mb);
+			
 		$this->realObject = array($contrInstance, $method);
 		
 		return $this->realObject;
