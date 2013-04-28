@@ -51,6 +51,19 @@ abstract class Controller {
 		return $this->mb->call($reverseKey);
 	}
 	
+	/**
+	 * Renders a view and returns the result.
+	 * @param string $view The view file
+	 * @param array $vars Variables to add to the view.
+	 * @return string The content of the view rendered.
+	 */
+	public function renderView ($view, $vars = array()) {
+		$v = new View($this->events, null, $this->mb->cfg[MB::CFG_VIEWPATH]);
+		$v->setRequest($this->request);
+		$v->setMB($this->mb);
+		return $v->render($view, $vars);
+	}
+	
 	
 	/**
 	 * Returns a Minibase\Http\Response object based on the type you want to return.
