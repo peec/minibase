@@ -147,13 +147,38 @@ $mb->events->on("before:render", function ($view, &$args) {
 }, $mb);
 ```
 
+#### before:render:extension (&$ext$extHandlers)
+
+Allows to add new render methods based on the file extension of the view file being rendered. Forexample the twig plugin 
+adds "html" and "twig" extension handlers.
+
+
+Sample of implementation.
+
+```php
+$this->mb->events->on("before:render:extension", function (&$extHandlers) use ($plugin) {
+			// Be sure to use isset for performance.
+			if (!isset($extHandlers['twig'])) {
+				$callback = function ($vars, $view, $viewPath) use ($plugin) {
+					// Set current view instance.
+					$plugin->currentView = $this;
+					$vars['twigMBViewVar'] = $this;
+					// ignore $viewPath, we add this to Twig_Loader_Filesystem.
+					echo $plugin->twig->render($view, $vars);
+				};
+				$extHandlers['twig']  = $callback;
+				$extHandlers['html']  = $callback;
+			}
+		});
+```		
+
 #### after:render (Minibase\Mvc\View $view, string &$content)
 
 
 Triggered after content has been rendered, but not echoed out yet. Useful to modify output after it has been rendered.
 
 
-#### mb:render ()
+#### mb:render:$file_extension ()
 
 Should return a callback that renders a view.  `$this` will be bound to the `View` instance. The callback takes 3 arguments.  
 
