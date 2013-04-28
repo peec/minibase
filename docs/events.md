@@ -147,7 +147,7 @@ $mb->events->on("before:render", function ($view, &$args) {
 }, $mb);
 ```
 
-#### before:render:extension (&$ext$extHandlers)
+#### before:render:extension (&$extHandlers)
 
 Allows to add new render methods based on the file extension of the view file being rendered. Forexample the twig plugin 
 adds "html" and "twig" extension handlers.
