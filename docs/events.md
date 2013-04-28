@@ -48,10 +48,10 @@ $mb->addEventCollection(new MyEvents());
 ```
 
 
-## Built in events
+# Built in events
 
 
-### Minibase
+## Minibase
 
 #### mb:start (\Minibase\MB $mb)
 
@@ -83,7 +83,7 @@ $mb->route("get", "/rssfeed", function () {
 ```
 
 
-### Request
+## Request
 
 #### mb:exception:InvalidJsonRequestException (Minibase\Http\Request $request)
 
@@ -104,7 +104,7 @@ $mb->events->on("mb:exception:InvalidJsonRequestException", function ($request) 
 ```
 
 
-### Routing
+## Routing
 
 #### mb:route:before  (Minibase\Http\Request $request)
 
@@ -132,7 +132,7 @@ $mb->events->on("mb:exception:RouteNotFoundException", function ($request) {
 
 
 
-### View
+## View
 
 #### before:render (Minibase\Mvc\View $view, array &$viewVars)
 
@@ -181,6 +181,31 @@ function() {
 
 If you want to extend controllers with custom annotations this is the method to listen on. `$annotation` should be checked with `instanceof`. Annotations are executed before the specific call are executed so custom annotations can forexample. If the event returns a `Minibase\Http\Response` object, execution of the current call is stopped and the specific Response is returned instead. The controller is a instance of the specific controller that the annotation was on.
 
+#### mb:call:execute (Minibase\Http\Request $request, array $annotations)
+
+Triggered just before the controller-method is runned. The callback should return a `Response` or callback if you want to ignore the current method route for execution. The response you provided is instead returned and executed. 
+
+
+Sample from the CSRF plugin
+
+```php
+	function (Request $req, $annotations) {
+			$this->setToken();
+			
+			$skip = $req->method === 'get';
+			foreach($annotations as $annotation) {
+				// Ignore CSRF protection.
+				if ($annotation instanceof IgnoreCsrfProtection) {
+					$skip = true;
+				}
+			}
+			
+			if (!$skip) { 
+				// Return a Minibase\Http\Response.
+			}
+	}
+			
+```
 
 
 
