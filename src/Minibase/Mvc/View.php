@@ -75,12 +75,28 @@ class View{
 		ob_start();
 		
 		$this->events->trigger("before:render", [$this, &$vars]);
-		$call = $this->events->trigger("mb:render", array(), function() {	
-			return function ($vars, $view, $viewPath) {
-				extract($vars);
-				include ($viewPath ?: "") . $view;
-			};
+		
+		// Get the extension
+		$ext = pathinfo($view, PATHINFO_EXTENSION);
+		
+		$extHandlers = array(
+				'php' => function ($vars, $view, $viewPath) {
+					extract($vars);
+					include ($viewPath ?: "") . $view;
+				}
+		);
+		$this->events->trigger("before:render:extension", [&$extHandlers, $this]);
+		
+		
+		if (!isset($extHandlers[$ext])) {
+			throw new \Exception ("Can not render view {$viewPath}{$view}. Handler for \"{$ext}\" extension is not added. Add with event before:render:extension.");
+		}
+		
+		$call = $this->events->trigger("mb:render:$ext", array(), function () use($ext, $extHandlers) {	
+			return $extHandlers[$ext];
 		})[0];
+		
+		
 		
 		$call = \Closure::bind($call, $this);
 		$call($vars, $view, $viewPath);
