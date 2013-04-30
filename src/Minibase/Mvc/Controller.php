@@ -26,11 +26,17 @@ abstract class Controller {
 	 */
 	public $events;
 	
+	/**
+	 * Translator
+	 * @var Minibase\I18n\I18nGetText
+	 */
+	public $trans;
 	
 	final public function setMB (MB $mb) {
 		$this->mb = $mb;
 		$this->request = $mb->request;
 		$this->events = $mb->events;
+		$this->trans = $mb->trans;
 	}
 	
 	

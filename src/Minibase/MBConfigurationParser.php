@@ -78,6 +78,37 @@ class MBConfigurationParser {
 			}
 		}, false, self::T_ARRAY);
 		
+		$this->assign("i18n", $this->data, function ($value) use ($mb) {
+			
+			$this->assign("availableLanguages", $value, function ($availableLanguages) use($mb) {
+				$mb->trans->setAvailableLanguages($availableLanguages);
+			}, false, self::T_ARRAY);
+			
+			$this->assign("defaultLocale", $value, function ($defaultLocale) use($mb) {
+				$mb->trans->setLocale($defaultLocale);
+			}, false, self::T_STRING);
+			
+			$this->assign("defaultDomain", $value, function ($defaultDomain) use($mb) {
+				$mb->trans->switchDomain($defaultDomain);
+			}, false, self::T_STRING);
+			
+			$this->assign("localeRepositories", $value, function ($localeRepositories) use($mb) {
+				
+				foreach($localeRepositories as $localeRepository) {
+					$localeDir = $this->assign("localeDir", $localeRepository, null,         true, self::T_STRING, null);
+					$locale = $this->assign("locale", $localeRepository, null,         true, self::T_STRING, null);
+					$rootDirs = $this->assign("rootDirs", $localeRepository, null,           true, self::T_ARRAY, null);
+					$domain = $this->assign("domain", $localeRepository, null,    true, self::T_STRING);
+					$charset = 	$this->assign("charset", $localeRepository, null, false, self::T_STRING, 'UTF-8');
+					
+					$mb->trans->load($domain, $localeDir, $locale, $rootDirs, $charset);
+				}
+				
+			}, false, self::T_ARRAY);
+			
+		}, false, self::T_OBJECT);
+		
+		
 		$this->assign("routeFiles", $this->data, function ($value) use ($mb) {
 			foreach($value as $file){
 				$mb->loadRouteFile($file);
@@ -90,6 +121,7 @@ class MBConfigurationParser {
 				$mb->addEventCollection(new $event());
 			}
 		}, false, self::T_ARRAY);
+		
 		
 		
 		$this->assign("config", $this->data, function ($value) use ($mb) {
@@ -158,6 +190,7 @@ class MBConfigurationParser {
 				
 		);
 		
+		
 		$str = preg_replace_callback($patterns, function ($keys) use($varMap) {
 			$key = $keys[1];
 			$val = $keys[2];
@@ -177,6 +210,8 @@ class MBConfigurationParser {
 			$value = str_replace('\\', '\\\\', $value); // Windows.
 			return $value;
 		}, $str);
+		
+		
 		
 		return $str;
 	}

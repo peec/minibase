@@ -1,6 +1,8 @@
 <?php
 namespace Minibase;
 
+use Minibase\I18n\I18nGetText;
+
 use Doctrine\Common\Cache\CacheProvider;
 
 use Minibase\Cache\IArrayCacheConfigure;
@@ -85,6 +87,12 @@ class MB{
 	 */
 	public $cache;
 	
+	/**
+	 * I18N service container
+	 * @var Minibase\I18n\I18nGetText
+	 */
+	public $trans;
+	
 	const VERSION = "1.0.0a";
 	
 	/**
@@ -105,6 +113,7 @@ class MB{
 		$mb->events = new EventBinder();
 		$mb->request = Http\Request::createFromGlobals();
 		$mb->request->setMB($mb);
+		$mb->trans = new I18nGetText();
 		return $mb;
 	}
 	
@@ -112,8 +121,8 @@ class MB{
 		$mb = new MB();
 		$mb->events = new EventBinder();
 		$mb->request = new Http\Request();
-		
 		$mb->console = new MBConsole($mb);
+		$mb->trans = new I18nGetText();
 		return $mb;
 	}
 	
@@ -367,6 +376,7 @@ class MB{
 	public function setCache (CacheProvider $cache) {
 		$this->cache = $cache;
 	}
+	
 	
 	
 	/**
