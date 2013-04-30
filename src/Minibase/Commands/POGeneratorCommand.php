@@ -25,8 +25,10 @@ class POGeneratorCommand extends Command{
 		
 		$typeMap = array(
 			'php' => function ($file) {
-				$parser = new Extractor($file);
-				return $parser->getStrings();
+				if (in_array(strtolower($file->getExtension()), array('php','php5'))) {
+					$parser = new Extractor($file);
+					return $parser->getStrings();
+				}
 			}
 		);
 		
