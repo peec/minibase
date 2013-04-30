@@ -9,12 +9,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class POGeneratorCommand extends Command{
+class POTGeneratorCommand extends Command{
 	
 	protected function configure() {
 		$this
-		->setName('mb:generate-po')
-		->setDescription('Updates or generates PO files from the application source code.')
+		->setName('mb:generate-pot')
+		->setDescription('Updates or generates POT files from the application/plugins source code.')
 		;
 	}
 	
