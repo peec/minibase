@@ -23,6 +23,9 @@ class I18nGetText {
 	public $availableLanguages = array();
 	
 	
+	public function getAvailableLanguages () {
+		return $this->availableLanguages;
+	}
 	/**
 	 * Sets the available languages.
 	 * @param array $availableLanguages
@@ -63,6 +66,7 @@ class I18nGetText {
 			throw new \Exception ("$path is not a valid directory. The directory must be created and follow the gettext structure with LC_MESSAGES and proper locale / domain structure of po/mo files.");
 		}
 		$this->domains[$domain] = array(
+				'domain' => $domain,
 				'path' => $path,
 				'rootDirs' => $rootDirs,
 				'charset' => $charset,
