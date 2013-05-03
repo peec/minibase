@@ -48,8 +48,21 @@ class I18nGetText {
 			throw new \Exception("$locale is not in the available languages.");
 		}
 		
-		putenv('LC_ALL=' . $locale);
-		setlocale(LC_ALL, $locale);
+		putenv("LANG=$locale");
+		
+		$tries = array("$locale.utf8", "$locale.UTF-8", $locale, "$locale.UTF8");
+		
+		$foundLocale = false;
+		foreach($tries as $loc) {
+			if (setlocale(LC_ALL, $loc)) {
+				$foundLocale = true;
+				break;
+			}
+		}
+		if (!$foundLocale) {
+			throw new \Exception ("Could not set LOCALE to any of (".implode(', ', $tries)."). Server doesn't seem to support this locale, see the output of 'locale -a'. Create the locale with locale-gen.");
+		}
+		
 		$this->locale = $locale;
 	}
 	
@@ -70,8 +83,11 @@ class I18nGetText {
 				'path' => $path,
 				'rootDirs' => $rootDirs,
 				'charset' => $charset,
-				'locale' => $locale
+				'locale' => $locale,
+				'potPath' => "{$path}/{$locale}/LC_MESSAGES"
 				);
+		
+		$this->domains[$domain]['potFile'] = "{$this->domains[$domain]['potPath']}/{$domain}.pot";
 		
 		bindtextdomain($domain, $path);
 		bind_textdomain_codeset($domain, $charset);

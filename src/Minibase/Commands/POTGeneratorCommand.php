@@ -16,13 +16,25 @@ class POTGeneratorCommand extends Command{
 	
 	protected function configure() {
 		$this
-		->setName('mb:generate-pot')
-		->setDescription('Updates or generates POT files from the application/plugins source code.')
-		;
+		->setName('mb:lang:extract')
+		->setDescription('Updates or generates POT files from the specified domain.')
+		->addArgument('domain', InputArgument::REQUIRED, "The gettext domain. Tip: Use mb:lang:domains to get the domains.")
+		->setHelp(<<<EOT
+The <info>mb:lang:extract</info> command generates one ".pot" file for the specified domain.
+
+Use mb:lang:domains to get the available (registered) domains.
+
+POT files is the first step, the strings that needs to be translated are extracted by this
+command.
+
+EOT
+				);
 	}
 	
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$mb = $this->getHelper('mb')->getMb();
+		
+		$domain = $input->getArgument('domain');
 		
 		$domains = $mb->trans->getDomains();
 		
@@ -34,10 +46,12 @@ class POTGeneratorCommand extends Command{
 		
 		$mb->events->trigger("mb:generate-po", array(&$typeMap));
 		
+		if (!isset($domains[$domain])) {
+			throw new \Exception("No such gettext domain {$domain} registered. Run mb:lang:domains to see registered domains.");
+		}
 		
+		$conf = $domains[$domain];
 		
-		foreach ($domains as $domain => $conf) {
-			
 			
 			
 			$cleanups = array();
@@ -81,13 +95,11 @@ class POTGeneratorCommand extends Command{
 			}
 			
 			
-			$potPath = "{$conf['path']}/{$conf['locale']}/LC_MESSAGES";
 			
-			if (!is_dir($potPath)){
-				mkdir($potPath, 0777, true);
+			if (!is_dir($conf['potPath'])){
+				mkdir($conf['potPath'], 0777, true);
 			}
 			
-			$potFile = "{$potPath}/{$conf['domain']}.pot";
 			
 			$options = implode(' ',array(
 					'--from-code=' . $conf['charset'],
@@ -95,7 +107,7 @@ class POTGeneratorCommand extends Command{
 					'--language=PHP',
 					'-f -',
 					'--no-wrap',
-					"-o \"$potFile\"",
+					"-o \"{$conf['potFile']}\"",
 			));
 			
 			
@@ -114,7 +126,7 @@ class POTGeneratorCommand extends Command{
 			foreach ($cleanups as $cleanup) {
 				$cleanup();
 			}
-		}
+		
 		
 		
 		

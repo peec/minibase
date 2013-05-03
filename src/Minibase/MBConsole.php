@@ -23,7 +23,11 @@ class MBConsole{
 		$helperSet->set(new \Symfony\Component\Console\Helper\FormatterHelper(), 'formatter');
 		
 		$this->console->addCommands(array(
-			new Command\POTGeneratorCommand()
+			new Command\POTGeneratorCommand(),
+			new Command\GetTextDomainListCommand(),
+			new Command\GetTextInitLanguageCommand(),
+			new Command\GetTextMergeCommand(),
+			new Command\GetTextCompileCommand()
 		));
 		
 		
