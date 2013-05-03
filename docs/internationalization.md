@@ -26,6 +26,18 @@ Minibase wants to know what language to use (if it exists), else some other lang
 $mb->trans->setLocale('en_GB');
 ```
 
+#### Server must support the locale.
+
+Exception might be thrown from setLocale if the server does not support your new language. It's really easy to install new locales. 
+
+On linux mint / ubuntu:
+
+```bash
+sudo locale-gen nb_NO
+sudo locale-gen nb_NO.utf8
+```
+
+
 ### Register a new domain
 
 Minibase wants to know some information about the `domain` you are going to register for your i18n configuration. Note that there are built in commands that also use this information, thereby we need all this information:
