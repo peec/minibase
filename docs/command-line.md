@@ -10,10 +10,8 @@ You will need to create a php file that starts Minibase in CLI mode.
 Create a file named `cli.php`
 
 ```php
-require(__DIR__ . "/app.php"); // Your app file that includes autoloader and configureMB function.
-$mb = MB::cli();
-configureMB($mb); // Just a function that configures $mb, so that MB::create() can use the same configuration.
-
+require __DIR__ . '/vendor/autoload.php';
+$mb = Minibase\MB::cli()->loadConfigFile(__DIR__ . '/app/app.json', __DIR__ . '/app');
 $mb->start();
 ```
 
