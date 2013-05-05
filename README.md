@@ -52,7 +52,7 @@ You can install Minibase with [Composer](http://getcomposer.org/), if you are no
 * [**Commandline**](docs/command-line.md): Minibase includes symfony CLI, CLI and also be extended with custom commands.
 * [**Plugins**](docs/plugins.md): Create your own plugins publish them to composer and share.
 * [**3rdparty plugins**](docs/3rdparty-plugins.md): Browse plugins to extend minibase.
-
+* [**Internationalization**](docs/internationalization.md): I18n for your apps with gettext. Full workflow control.
 
 
 
