@@ -26,6 +26,10 @@ class AsseticPlugin extends Plugin{
 			throw new \Exception ("rootDir must be defined. Should be where the public directory available by forexample Apache is (the www dir).");	
 		}
 		
+		$this->config['writeTo'] = $this->cfg('writeTo') ? $this->cfg('writeTo') : $this->cfg('rootDir');
+		
+		
+		
 		
 		$filters = $this->cfg('filters', array());
 		

@@ -39,6 +39,7 @@ EOT
 
 		$plugin = $mb->get('Minibase\Assetic\AsseticPlugin');
 		
+		$writeTo = $plugin->cfg('writeTo');
 
 		
 		$factory = $plugin->assetFactory;
@@ -54,12 +55,23 @@ EOT
 		
 		$mb->events->trigger("mb:assetic:am", array($am));
 		
+		if (!is_dir($writeTo)) {
+			$output->writeln(sprintf("Creating directory %s", $writeTo));
+			if (!mkdir($writeTo, 0777, true)) {
+				throw new \Exception (sprintf("Could not create %s, permission denied or invalid directory.", $writeTo));
+			}
+		}
 		
-		$writer = new AssetWriter($plugin->cfg('rootDir'));
+		if (!is_writable($writeTo)) {
+			throw new \Exception (sprintf("%s must be writable.", $writeTo));
+		}
+		
+		
+		$writer = new AssetWriter($writeTo);
 		// $writer->writeManagerAssets($am);
-		$this->dumpManagerAssets($am, $writer);
+		$this->dumpManagerAssets($am, $writer, $output);
 		
-		$output->writeln("Wrote assets to respective folders in the web directory.");
+		$output->writeln(sprintf("Wrote compiled assets to %s.", $writeTo));
 	}
 
 	
@@ -72,7 +84,7 @@ EOT
 	 * @param AssetManager $am
 	 * @param AssetWriter  $writer
 	 */
-	protected function dumpManagerAssets(AssetManager $am, AssetWriter $writer)
+	protected function dumpManagerAssets(AssetManager $am, AssetWriter $writer, OutputInterface $output)
 	{
 		foreach ($am->getNames() as $name) {
 			$asset   = $am->get($name);
@@ -81,6 +93,8 @@ EOT
 				$formula = $am->getFormula($name);
 			}
 	
+			$output->writeln("Writing assets to <info>{$asset->getTargetPath()}</info>");
+			
 			$writer->writeAsset($asset);
 	
 			if (!isset($formula[2])) {
@@ -92,6 +106,8 @@ EOT
 	
 			if (null !== $combine ? !$combine : $debug) {
 				foreach ($asset as $leaf) {
+					$output->writeln("---- <info>{$leaf->getSourcePath()} >> {$leaf->getTargetPath()}</info>");
+						
 					$writer->writeAsset($leaf);
 				}
 			}
