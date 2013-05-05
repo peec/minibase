@@ -98,3 +98,25 @@ function assetic_image($input, $filters = array(), array $options = array());
 
 
 
+
+## Dumping assets
+
+You will need to dump your assets the first time and after changing assets, this is done with the `mb:assetic:dump` command.
+
+Run the cli.php:
+
+```bash
+php cli.php mb:assetic:dump
+```
+
+Assets will then be written to directory based on the asset configuration defined in your views.
+
+```
+Writing assets to build/css/all.css
+---- assets/css/style2.css >> build/css/all_part_1_style2_1.css
+---- assets/css/style.css >> build/css/all_part_1_style_2.css
+Wrote compiled assets to /home/peec/projects/minibase-sample/app/../www.
+```
+
+
+
