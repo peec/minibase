@@ -24,7 +24,7 @@ class ConfigureMemcached implements IArrayCacheConfigure{
 		}
 
 		$this->driver = new MemcachedCache();
-		$this->driver->setMemcache($memcached);
+		$this->driver->setMemcached($memcached);
 	}
 	
 	public function getDriver () {

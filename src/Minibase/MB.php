@@ -18,6 +18,8 @@ use Minibase\Http;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
+use Assetic\Factory\AssetFactory;
+
 /**
  * Application stub for a simple application.
  * @property mixed $plugins
@@ -93,6 +95,13 @@ class MB{
 	 */
 	public $trans;
 	
+	/**
+	 * Current working directory (web dir or forexample CLI dir).
+	 * @var string
+	 */
+	public $cwd;
+	
+	
 	const VERSION = "1.0.0a";
 	
 	/**
@@ -106,10 +115,11 @@ class MB{
 	/**
 	 * Factory a new application
 	 * Uses global variables to create nested objects.
+	 * @param string $cwd The current working dir. Usualy __DIR__ from where constructed.
 	 * @return \Minibase\MB Returns a new object of Minibase.
 	 */
-	static public function create () {
-		$mb = new MB();
+	static public function create ($cwd = null) {
+		$mb = new MB($cwd);
 		$mb->events = new EventBinder();
 		$mb->request = Http\Request::createFromGlobals();
 		$mb->request->setMB($mb);
@@ -117,8 +127,12 @@ class MB{
 		return $mb;
 	}
 	
-	static public function cli () {
-		$mb = new MB();
+	/**
+	 * Factory to create a CLI based application.
+	 * @param string $cwd The current working dir. Usualy __DIR__ from where called.
+	 */
+	static public function cli ($cwd = null) {
+		$mb = new MB($cwd);
 		$mb->events = new EventBinder();
 		$mb->request = new Http\Request();
 		$mb->console = new MBConsole($mb);
@@ -127,17 +141,31 @@ class MB{
 	}
 	
 	
-	public function __construct() {
+	/**
+	 * Returns the current working directory.
+	 */
+	public function getCwd () {
+		return $this->cwd;
+	}
+	
+	/**
+	 * @param string $cwd Current working directory.
+	 */
+	public function __construct($cwd = null) {
+		$this->cwd = $cwd;
+		
 		AnnotationRegistry::registerFile(__DIR__ . '/Annotation/Annotations.php');
 		$this->annotationReader = new AnnotationReader();
 		
 		// Find out if in development or not
 		$this->applicationEnv = (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development');
 		
-		if ($this->isDevelopment()) {
-			$this->cache = new ArrayCache();
-		}
+		
+		$this->cache = new ArrayCache();
+		
 	}
+	
+	
 	
 	/**
 	 * Routes HTTP requests against closure callbacks.

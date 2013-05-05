@@ -21,6 +21,6 @@
         "symfony/console": "2.*",
         "symfony/process": "2.*",
         "doctrine/cache": "1.*",
-        "kunststube/potools": "*"
+        "kriswallsmith/assetic": "1.*"
     }
 }

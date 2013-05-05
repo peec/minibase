@@ -89,6 +89,9 @@ abstract class Controller {
 		'html' => function () {
 			$viewPath = isset($this->cfg[MB::CFG_VIEWPATH]) ? $this->cfg[MB::CFG_VIEWPATH] : null;
 			return new Http\HtmlResponse($viewPath, $this);
+		},
+		'text' => function () {
+			return new Http\TextResponse();
 		}
 		);
 	

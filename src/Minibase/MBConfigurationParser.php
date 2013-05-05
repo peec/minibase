@@ -130,6 +130,16 @@ class MBConfigurationParser {
 			}
 		}, false, self::T_OBJECT);
 		
+		
+		
+		$this->assign("cacheDriver", $this->data, function ($value) use ($mb) {
+			$name = $this->replaceNS($this->assign("name", $value, null, true, self::T_STRING));
+			$config = $this->assign("config", $value, null, false, self::T_OBJECT, array());
+			$mb->configureCacheDriver(new $name(), $this->objectToArray($config));
+				
+				
+		}, false, self::T_OBJECT);
+		
 		$this->assign("plugins", $this->data, function ($value) use ($mb) {
 			foreach($value as $plugin) {
 				$name = $this->replaceNS($this->assign("name", $plugin, null, true, self::T_STRING));
@@ -140,13 +150,6 @@ class MBConfigurationParser {
 			}
 		}, false, self::T_ARRAY);
 		
-		
-		$this->assign("cacheDriver", $this->data, function ($value) use ($mb) {
-			$name = $this->replaceNS($this->assign("name", $value, null, true, self::T_STRING));
-			$config = $this->assign("config", $value, null, false, self::T_OBJECT, array());
-			$mb->configureCacheDriver(new $name(), $this->objectToArray($config));
-			
-		}, false, self::T_OBJECT);
 		
 	}
 	
