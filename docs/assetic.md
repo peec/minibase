@@ -9,6 +9,9 @@ Before you can use assetic, you must add the plugin using either app.json method
 
 In this case, we also register two filters used for css (rewrite and compressor).
 
+
+**PHP:**
+
 ```php
 $mb->initPlugins(array(
   'Minibase/Assetic/AsseticPlugin' => array(
@@ -25,6 +28,30 @@ $mb->initPlugins(array(
   )
 ));
 ```
+
+**JSON:**
+
+```json
+"plugins": [
+                {
+                        "name": "Minibase/Assetic/AsseticPlugin",
+                        "config": {
+                                "rootDir": "${APP_DIR}/../www",
+                                "filters": {
+                                        "cssrewrite": {
+                                                "filter": "Assetic/Filter/CssRewriteFilter"
+                                        },
+                                        "yui_css": {
+                                          "filter": "Assetic/Filter/Yui/CssCompressorFilter",
+                                          "args": ["/path/to/yui_compressor.jar"]
+                                        }
+                                }
+                        }
+                }
+]
+
+```
+
 
 
 
