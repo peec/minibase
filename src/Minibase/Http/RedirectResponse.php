@@ -18,17 +18,6 @@ class RedirectResponse extends Response {
 	}
 	
 	/**
-	 * Adds a flash object, meaning it will only be available for the next request.
-	 * Useful for displaying messages after a redirect response.
-	 * 
-	 * @param mixed $obj some object or even just a string.
-	 */
-	public function flash($obj) {
-		$_SESSION['flash_msg'] = $obj;
-		return $this;
-	}
-	
-	/**
 	 * Redirects to internal site. Using the base URL before $location.
 	 * @param unknown_type $location
 	 */

@@ -32,11 +32,18 @@ abstract class Controller {
 	 */
 	public $trans;
 	
+	
+	/**
+	 * @var Symfony\Component\HttpFoundation\Session
+	 */
+	public $session;
+	
 	final public function setMB (MB $mb) {
 		$this->mb = $mb;
 		$this->request = $mb->request;
 		$this->events = $mb->events;
 		$this->trans = $mb->trans;
+		$this->session = $mb->session;
 	}
 	
 	

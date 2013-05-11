@@ -1,6 +1,14 @@
 <?php
 namespace Minibase;
 
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler;
+
+use Symfony\Component\HttpFoundation\Session\Session;
+
+use Minibase\Session\IArraySessionConfigure;
+
 use Minibase\I18n\I18nGetText;
 
 use Doctrine\Common\Cache\CacheProvider;
@@ -102,6 +110,16 @@ class MB{
 	public $cwd;
 	
 	
+	/**
+	 * @var Symfony\Component\HttpFoundation\Session
+	 */
+	public $session;
+	
+	/**
+	 * @var \SessionHandlerInterface
+	 */
+	public $sessionHandler;
+	
 	const VERSION = "1.0.0a";
 	
 	/**
@@ -162,6 +180,7 @@ class MB{
 		
 		
 		$this->cache = new ArrayCache();
+		
 		
 	}
 	
@@ -314,15 +333,18 @@ class MB{
 	public function start () {
 		if (!$this->console) {
 			$this->events->trigger("mb:start", [$this]);
+				
+			// Start session manager.
+			if ($this->session) {
+				$this->session->start();
+			}
+			
 			foreach($this->routes as $route){
+					
 				list($method, $uri, $call) = $route;
+				
 				if ($this->executeRoute($method, $uri, $call)) {
-			
-					// Unbind flash scope
-					if (isset($_SESSION) && isset($_SESSION['flash_msg'])) {
-						unset($_SESSION['flash_msg']);
-					}
-			
+					
 					return;
 				}
 			}
@@ -394,6 +416,19 @@ class MB{
 			$cache = new $cacher();
 			$cache->setup($config);
 			$this->cache = $cache->getDriver();
+		}
+	}
+	
+	
+	public function configureSessionDriver (IArraySessionConfigure $configer, $config = array(), $options = array()) {
+		$sessConfigurator = new $configer();
+		$sessConfigurator->setup($config);
+		$handler = $sessConfigurator->getHandler();
+		$this->sessionHandler = $handler;
+		if (!$this->console) {
+			
+			$storage = new NativeSessionStorage($options, $handler);
+			$this->session = new Session($storage);
 		}
 	}
 	

@@ -1,6 +1,8 @@
 <?php
 namespace Minibase\Mvc;
 
+use Symfony\Component\HttpFoundation\Session\Session;
+
 use Minibase\MB;
 
 use Minibase\Http\Request;
@@ -21,6 +23,10 @@ class View{
 	
 	private $viewPath;
 	
+	/**
+	 * @var Session
+	 */
+	private $session;
 	private $mb;
 
 	public function __construct(EventBinder $eventbinder, $parentView = null, $viewPath = null) {
@@ -56,6 +62,7 @@ class View{
 		$v = new View($this->events, $this, $this->viewPath);
 		$v->setRequest($this->request);
 		$v->setMB($this->mb);
+		$v->setSession($this->session);
 		echo $v->render($view, $vars);
 	}
 
@@ -66,9 +73,7 @@ class View{
 	 */
 	public function render ($view, $vars = array()) {
 
-		if (isset($_SESSION) && isset($_SESSION['flash_msg'])) {
-			$vars['flash'] = $_SESSION['flash_msg'];
-		}
+		$vars['session'] = $this->session;
 		
 		$viewPath = $this->viewPath;
 		
@@ -117,6 +122,10 @@ class View{
 	
 	public function setMB (MB $mb) {
 		$this->mb = $mb;
+	}
+	
+	public function setSession (Session $session) {
+		$this->session = $session;
 	}
 	
 	public function setRequest (Request $request) {

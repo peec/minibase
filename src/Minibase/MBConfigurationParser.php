@@ -131,6 +131,13 @@ class MBConfigurationParser {
 		}, false, self::T_OBJECT);
 		
 		
+		$this->assign("sessionDriver", $this->data, function ($value) use ($mb) {
+			$name = $this->replaceNS($this->assign("name", $value, null, true, self::T_STRING));
+			$config = $this->assign("config", $value, null, false, self::T_OBJECT, array());
+			$options = $this->assign("options", $value, null, false, self::T_OBJECT, array());
+			$mb->configureSessionDriver(new $name(), $this->objectToArray($config), $this->objectToArray($options));
+		}, false, self::T_OBJECT);
+		
 		
 		$this->assign("cacheDriver", $this->data, function ($value) use ($mb) {
 			$name = $this->replaceNS($this->assign("name", $value, null, true, self::T_STRING));

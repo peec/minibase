@@ -29,6 +29,7 @@ class HtmlResponse extends Response{
 		$v = new View($this->events, null, $this->viewPath);
 		$v->setRequest($this->request);
 		$v->setMB($this->mb);
+		$v->setSession($this->mb->session);
 		
 		$this->body = $v->render($view, $vars);
 
